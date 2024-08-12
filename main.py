@@ -1,11 +1,11 @@
 from kivy.config import Config
+
 Config.read('./app_settings.ini')
 
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivy.uix.videoplayer import VideoPlayer
 from os.path import expanduser
-
 
 
 kv = """
@@ -41,7 +41,9 @@ class MainApp(MDApp):
 
     def touch(*args):
         print(args)
+
     def rotate(self):
         self.root.roataion = 270
+
 
 MainApp().run()

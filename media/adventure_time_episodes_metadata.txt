@@ -1,0 +1,279 @@
+title   season  episode
+Slumber Party Panic	1	1
+Trouble in Lumpy Space	1	2
+Prisoners of Love	1	3
+Tree Trunks	1	4
+The Enchiridion!	1	5
+The Jiggler	1	6
+Ricardio the Heart Guy	1	7
+Business Time	1	8
+My Two Favorite People	1	9
+Memories of Boom Boom Mountain	1	10
+Wizard	1	11
+Evicted!	1	12
+City of Thieves	1	13
+The Witch's Garden	1	14
+What Is Life?	1	15
+Ocean of Fear	1	16
+When Wedding Bells Thaw	1	17
+Dungeon	1	18
+The Duke	1	19
+Freak City	1	20
+Donny	1	21
+Henchman	1	22
+Rainy Day Daydream	1	23
+What Have You Done?	1	24
+His Hero	1	25
+Gut Grinder	1	26
+It Came from the Nightosphere	2	1
+The Eyes	2	2
+Loyalty to the King	2	3
+Blood Under the Skin	2	4
+Storytelling	2	5
+Slow Love	2	6
+Power Animal	2	7
+Crystals Have Power	2	8
+The Other Tarts	2	9
+To Cut a Woman's Hair	2	10
+The Chamber of Frozen Blades	2	11
+Her Parents	2	12
+The Pods	2	13
+The Silent King	2	14
+The Real You	2	15
+Guardians of Sunshine	2	16
+Death in Bloom	2	17
+Susan Strong	2	18
+Mystery Train	2	19
+Go with Me	2	20
+Belly of the Beast	2	21
+The Limit	2	22
+Video Makers	2	23
+Mortal Folly	2	24
+Mortal Recoil	2	25
+Heat Signature	2	26
+Conquest of Cuteness	3	1
+Morituri te Salutamus	3	2
+Memory of a Memory	3	3
+Hitman	3	4
+Too Young	3	5
+The Monster	3	6
+Still	3	7
+Wizard Battle	3	8
+Fionna and Cake	3	9
+What Was Missing	3	10
+Apple Thief	3	11
+The Creeps	3	12
+From Bad to Worse	3	13
+Beautopia	3	14
+No One Can Hear You	3	15
+Jake vs. Me-Mow	3	16
+Thank You	3	17
+The New Frontier	3	18
+Holly Jolly Secrets (1)	3	19
+Holly Jolly Secrets (2)	3	20
+Marceline's Closet	3	21
+Paper Pete	3	22
+Another Way	3	23
+Ghost Princess	3	24
+Dad's Dungeon	3	25
+Incendium	3	26
+Hot to the Touch	4	1
+Five Short Graybles	4	2
+Web Weirdos	4	3
+Dream of Love	4	4
+Return to the Nightosphere	4	5
+Daddy's Little Monster	4	6
+In Your Footsteps	4	7
+Hug Wolf	4	8
+Princess Monster Wife	4	9
+Goliad	4	10
+Beyond This Earthly Realm	4	11
+Gotcha!	4	12
+Princess Cookie	4	13
+Card Wars	4	14
+Sons of Mars	4	15
+Burning Low	4	16
+BMO Noire	4	17
+King Worm	4	18
+Lady & Peebles	4	19
+You Made Me!	4	20
+Who Would Win?	4	21
+Ignition Point	4	22
+The Hard Easy	4	23
+Reign of Gunters	4	24
+I Remember You	4	25
+The Lich	4	26
+Finn the Human	5	1
+Jake the Dog	5	2
+Five More Short Graybles	5	3
+Up a Tree	5	4
+All the Little People	5	5
+Jake the Dad	5	6
+Davey	5	7
+Mystery Dungeon	5	8
+All Your Fault	5	9
+Little Dude	5	10
+Bad Little Boy	5	11
+Vault of Bones	5	12
+The Great Bird Man	5	13
+Simon & Marcy	5	14
+A Glitch Is a Glitch	5	15
+Puhoy	5	16
+BMO Lost	5	17
+Princess Potluck	5	18
+James Baxter the Horse	5	19
+Shh!	5	20
+The Suitor	5	21
+The Party's Over, Isla de Señorita	5	22
+One Last Job	5	23
+Another Five More Short Graybles	5	24
+Candy Streets	5	25
+Wizards Only, Fools	5	26
+Jake Suit	5	27
+Be More	5	28
+Sky Witch	5	29
+Frost & Fire	5	30
+Too Old	5	31
+Earth & Water	5	32
+Time Sandwich	5	33
+The Vault	5	34
+Love Games	5	35
+Dungeon Train	5	36
+Box Prince	5	37
+Red Starved	5	38
+We Fixed a Truck	5	39
+Play Date	5	40
+The Pit	5	41
+James	5	42
+Root Beer Guy	5	43
+Apple Wedding	5	44
+Blade of Grass	5	45
+Rattleballs	5	46
+The Red Throne	5	47
+Betty	5	48
+Bad Timing	5	49
+Lemonhope (1)	5	50
+Lemonhope (2)	5	51
+Billy's Bucket List	5	52
+Wake Up	6	1
+Escape from the Citadel	6	2
+James II	6	3
+The Tower	6	4
+Sad Face	6	5
+Breezy	6	6
+Food Chain	6	7
+Furniture & Meat	6	8
+The Prince Who Wanted Everything	6	9
+Something Big	6	10
+Little Brother	6	11
+Ocarina	6	12
+Thanks for the Crabapples, Giuseppe!	6	13
+Princess Day	6	14
+Nemesis	6	15
+Joshua & Margaret Investigations	6	16
+Ghost Fly	6	17
+Everything's Jake	6	18
+Is That You?	6	19
+Jake the Brick	6	20
+Dentist	6	21
+The Cooler	6	22
+The Pajama War	6	23
+Evergreen	6	24
+Astral Plane	6	25
+Gold Stars	6	26
+The Visitor	6	27
+The Mountain	6	28
+Dark Purple	6	29
+The Diary	6	30
+Walnuts & Rain	6	31
+Friends Forever	6	32
+Jermaine	6	33
+Chips & Ice Cream	6	34
+Graybles 1000+	6	35
+Hoots	6	36
+Water Park Prank	6	37
+You Forgot Your Floaties	6	38
+Be Sweet	6	39
+Orgalorg	6	40
+On the Lam	6	41
+Hot Diggity Doom	6	42
+The Comet	6	43
+Bonnie and Neddy	7	1
+Varmints	7	2
+Cherry Cream Soda	7	3
+Mama Said	7	4
+Football	7	5
+Stakes: Marceline the Vampire Queen (1)	7	6
+Stakes: Everything Stays (2)	7	7
+Stakes: Vamps About (3)	7	8
+Stakes: The Empress Eyes (4)	7	9
+Stakes: May I Come In? (5)	7	10
+Stakes: Take Her Back (6)	7	11
+Stakes: Checkmate (7)	7	12
+Stakes: The Dark Cloud (8)	7	13
+The More You Moe, The Moe You Know (1)	7	14
+Summer Showers	7	16
+Angel Face	7	17
+President Porpoise Is Missing!	7	18
+Blank Eyed Girl	7	19
+Bad Jubies	7	20
+King's Ransom	7	21
+Scamps	7	22
+Crossover	7	23
+The Hall of Egress	7	24
+Flute Spell	7	25
+The Thin Yellow Line	7	26
+Broke His Crown	8	1
+Don't Look	8	2
+Beyond the Grotto	8	3
+Lady Rainicorn of the Crystal Dimension	8	4
+I am a Sword	8	5
+Bun Bun	8	6
+Normal Man	8	7
+Elemental	8	8
+Five Short Tables	8	9
+The Music Hole	8	10
+Daddy-Daughter Card Wars	8	11
+Preboot	8	12
+Reboot	8	13
+Two Swords	8	14
+Do No Harm	8	15
+Wheels	8	16
+High Strangeness	8	17
+Horse and Ball	8	18
+Jelly Beans Have Power	8	19
+Islands: The Invitation (1)	8	20
+Islands: Whipple the Happy Dragon (2)	8	21
+Islands: Mysterious Island (3)	8	22
+Islands: Imaginary Resources (4)	8	23
+Islands: Hide and Seek (5)	8	24
+Islands: Min & Marty (6)	8	25
+Islands: Helpers (7)	8	26
+Islands: The Light Cloud (8)	8	27
+Orb	9	1
+Elements: Skyhooks (1)	9	2
+Elements: Bespoken For (2)	9	3
+Elements: Winter Light (3)	9	4
+Elements: Cloudy (4)	9	5
+Elements: Slime Central (5)	9	6
+Elements: Happy Warrior (6)	9	7
+Elements: Hero Heart (7)	9	8
+Elements: Skyhooks II (8)	9	9
+Abstract	9	10
+Ketchup	9	11
+Fionna and Cake and Fionna	9	12
+Whispers	9	13
+Three Buckets	9	14
+The Wild Hunt	10	1
+Always BMO Closing	10	2
+Son of Rap Bear	10	3
+Bonnibel Bubblegum	10	4
+Seventeen	10	5
+Ring of Fire	10	6
+Marcy & Hunson	10	7
+The First Investigation	10	8
+Blenanas	10	9
+Jake the Starchild	10	10
+Temple of Mars	10	11
+Gumbaldia	10	12
+Come Along With Me	10	13
