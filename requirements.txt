@@ -2,3 +2,7 @@ kivy[base]==2.3.0
 ffpyplayer==4.5.1
 pillow==10.4.0
 kivymd==1.2.0
+picovoice==3.0.2
+pvrecorder==1.2.2
+smbus2==0.4.3
+word2number==1.1

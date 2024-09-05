@@ -21,7 +21,7 @@ class VApp(App):
         build = Builder.load_string(kv)
         return build
     def on_start(self):
-        self.c = VideoPlayer(source = '/home/bmo/work/media/adventure time.s02e26.mkv', fullscreen = True)
+        self.c = VideoPlayer(source = '/home/bmo/work/media/adventure time.s02e21.mkv', fullscreen = True)
         self.root.ids.vid.add_widget(self.c)
     def touch(*args):
         print(args)
