@@ -73,6 +73,14 @@ class SpeechListener:
                         }
                     )
                 )
+            elif inference.intent == 'pause':
+                add_event(BmoEvent('pause', {}))
+            elif inference.intent == 'play':
+                add_event(BmoEvent('play_video', {}))
+            elif inference.intent == 'stop':
+                add_event(BmoEvent('stop', {}))
+            elif inference.intent == 'playGame':
+                add_event(BmoEvent('play_game', {'game': inference.slots.get('game')}))
 
         else:
             Logger.info("Didn't understand the command.\n")

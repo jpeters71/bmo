@@ -6,3 +6,4 @@ picovoice==3.0.2
 pvrecorder==1.2.2
 smbus2==0.4.3
 word2number==1.1
+pyalsaaudio==0.11.0

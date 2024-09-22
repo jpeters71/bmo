@@ -15,5 +15,7 @@ def add_event(ev: BmoEvent):
 
 
 def get_next_event() -> BmoEvent:
-    return _EVENT_QUEUE.get()
-
+    if _EVENT_QUEUE and not _EVENT_QUEUE.empty():
+        return _EVENT_QUEUE.get(block=False)
+    else:
+        return None
