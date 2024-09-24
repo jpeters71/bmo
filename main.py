@@ -7,8 +7,6 @@ from lib.event_queue import get_next_event
 from lib.games.pong import PongGame
 from lib.listener import start_listening
 
-
-
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.lang import Builder
@@ -21,22 +19,13 @@ from kivy.logger import Logger
 from os import path
 
 
-kv = """
-
-BoxLayout:
-    id: mainbox
-    orientation: 'vertical'
-    BoxLayout:
-        id: vid
-        rotation: 270
-
-
-"""
 ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
+
 
 class MainApp(App):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        Window.show_cursor = False
         self._title = 'Simple Video'
         self._images = [path.join(f'{ROOT_DIR}/media/faces', f) for f in os.listdir(f'{ROOT_DIR}/media/faces') if f.endswith('.jpg')]
         self._listener_thread = start_listening(ROOT_DIR)
@@ -49,6 +38,10 @@ class MainApp(App):
         self._layout.add_widget(self._image)
 
         return self._layout
+
+    def on_start(self):
+        self._ev_clock = Clock.schedule_interval(self._process_events, 5)
+
 
     def _process_events(self, dt):
         # Check for events
@@ -82,6 +75,7 @@ class MainApp(App):
             # Games
             elif ev.event_name == 'play_game':
                 game_name = ev_data.get('game')
+                Logger.info(f'Play game [{game_name}]')
 
                 if game_name == 'pong':
                     self._game_widget = PongGame()

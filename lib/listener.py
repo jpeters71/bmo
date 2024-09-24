@@ -16,7 +16,7 @@ class SpeechListener:
         try:
             access_key = os.environ.get('PV_KEY')
             if not access_key:
-                raise Exception(f'No access_key defined. Please make sure the PV_ENV environment variable is defined.')
+                raise Exception(f'No access_key defined. Please make sure the PV_KEY environment variable is defined.')
             self.picovoice = Picovoice(
                 access_key=access_key,
                 keyword_path=f'{root_path}/media/wake_word.ppn',
@@ -27,10 +27,16 @@ class SpeechListener:
 
             self.recorder = PvRecorder(
                 frame_length=self.picovoice.frame_length,
-                device_index=1,
+                device_index=-1,
             )
             self.recorder.start()
             Logger.info('Listening ... (Press Ctrl+C to exit)\n')
+
+
+
+            add_event(BmoEvent('play_game', {'game': 'pong'}))
+
+
 
         except PicovoiceInvalidArgumentError as e:
             Logger.exception("One or more arguments provided to Picovoice is invalid: ")
@@ -56,6 +62,7 @@ class SpeechListener:
 
     def inference_callback(self, inference: Inference):
         if inference.is_understood:
+            Logger.info(f'INFERENCE INTENT: {inference.intent}; slots: {inference.slots}')
             if inference.intent == 'playEpisode':
                 season_str = inference.slots.get('season')
                 episode_str = inference.slots.get('episode')
