@@ -5,6 +5,8 @@ Config.read('./app_settings.ini')
 
 from lib.event_queue import get_next_event
 from lib.games.pong import PongGame
+from lib.games.tetris import TetrisGame
+from lib.games.snake import SnakeGame
 from lib.listener import start_listening
 
 from kivy.app import App
@@ -81,7 +83,15 @@ class MainApp(App):
                     self._game_widget = PongGame()
                     self._layout.remove_widget(self._image)
                     self._layout.add_widget(self._game_widget)
+                elif game_name == 'tetris':
+                    self._game_widget = TetrisGame()
+                    self._layout.remove_widget(self._image)
+                    self._layout.add_widget(self._game_widget)
 
+                elif game_name == 'snake':
+                    self._game_widget = SnakeGame()
+                    self._layout.remove_widget(self._image)
+                    self._layout.add_widget(self._game_widget)
 
 
 MainApp().run()

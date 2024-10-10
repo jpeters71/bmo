@@ -34,8 +34,10 @@ class SpeechListener:
 
 
 
-            add_event(BmoEvent('play_game', {'game': 'pong'}))
-
+            # add_event(BmoEvent('play_game', {'game': 'pong'}))
+            # add_event(BmoEvent('play_game', {'game': 'tetris'}))
+            add_event(BmoEvent('play_game', {'game': 'snake'}))
+            # add_event(BmoEvent('play_video', {'season': 6, 'episode': 20}))
 
 
         except PicovoiceInvalidArgumentError as e:
