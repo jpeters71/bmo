@@ -36,7 +36,7 @@ class SpeechListener:
 
             # add_event(BmoEvent('play_game', {'game': 'pong'}))
             # add_event(BmoEvent('play_game', {'game': 'tetris'}))
-            add_event(BmoEvent('play_game', {'game': 'snake'}))
+            # add_event(BmoEvent('play_game', {'game': 'snake'}))
             # add_event(BmoEvent('play_video', {'season': 6, 'episode': 20}))
 
 
@@ -61,6 +61,7 @@ class SpeechListener:
 
     def wake_word_callback(self):
         Logger.info('[wake word]\n')
+        add_event(BmoEvent('wake_word',{}))
 
     def inference_callback(self, inference: Inference):
         if inference.is_understood:
@@ -93,6 +94,7 @@ class SpeechListener:
 
         else:
             Logger.info("Didn't understand the command.\n")
+            add_event(BmoEvent('unknown_command', {}))
 
     def listen(self):
         while True:

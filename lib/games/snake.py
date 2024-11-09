@@ -77,7 +77,7 @@ class SnakeGame(Widget):
         Window.size = (WINDOW_WIDTH, WINDOW_HEIGHT)
         Window.bind(on_key_down=self.key_action)
 
-        # Setup callbacks
+                         # Setup callbacks
         Window.bind(on_joy_axis=self.on_joy_axis)
         Window.bind(on_joy_button_up=self.on_joy_button_up)
 
