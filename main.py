@@ -1,6 +1,10 @@
 import os
 from kivy.config import Config
 
+from screens.admin_screens import ListeningScreen, MainScreen
+from screens.expression_screens import DontKnowScreen
+from screens.video_screen import VideoScreen
+
 Config.read('./app_settings.ini')
 
 from lib.event_queue import get_next_event
@@ -9,41 +13,57 @@ from lib.games.tetris import TetrisGame
 from lib.games.snake import SnakeGame
 from lib.listener import start_listening
 
-from kivy.app import App
+from kivymd.app import MDApp
+
 from kivy.core.window import Window
 from kivy.lang import Builder
-from kivy.uix.videoplayer import VideoPlayer
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.logger import Logger
 
+
+from kivy.uix.screenmanager import ScreenManager, NoTransition
 from os import path
 
 
 ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
 
+Builder.load_file('main.kv')
 
-class MainApp(App):
+
+# Screen names
+class ScreenNames:
+    main = 'main'
+    video = 'video'
+    listening = 'listening'
+    dont_know = 'dont_know'
+
+
+# Create the App class
+class MainApp(MDApp):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        Window.show_cursor = False
-        self._title = 'Simple Video'
-        self._images = [path.join(f'{ROOT_DIR}/media/faces', f) for f in os.listdir(f'{ROOT_DIR}/media/faces') if f.endswith('.jpg')]
-        self._listener_thread = start_listening(ROOT_DIR)
-        self._video_player = None
-        self._game_widget = None
 
     def build(self):
-        self._layout = BoxLayout()
-        self._image = Image(source=f'{ROOT_DIR}/media/faces/bmo00.jpg', allow_stretch=True)
-        self._layout.add_widget(self._image)
+        self.theme_cls.material_style = 'M3'
+        self._app_name = 'BMO'
+        Window.show_cursor = False
+        self._title = 'BMO'
+        self._listener_thread = start_listening(ROOT_DIR)
+        self._previous_screen = None
 
-        return self._layout
+        # Setup screens
+        self._sm = ScreenManager(transition=NoTransition())
+
+        self._sm.add_widget(MainScreen(name=ScreenNames.main))
+        self._video_screen = VideoScreen(name=ScreenNames.video)
+        self._sm.add_widget(self._video_screen)
+        self._sm.add_widget(ListeningScreen(name=ScreenNames.listening))
+        self._sm.add_widget(DontKnowScreen(name=ScreenNames.dont_know))
+
+        return self._sm
 
     def on_start(self):
-        self._ev_clock = Clock.schedule_interval(self._process_events, 5)
-
+        self._ev_clock = Clock.schedule_interval(self._process_events, .5)
 
     def _process_events(self, dt):
         # Check for events
@@ -51,29 +71,34 @@ class MainApp(App):
         if ev:
             Logger.info(f'Processing event: {ev.event_name} with data {ev.event_data}')
             ev_data = ev.event_data or {}
-            if ev.event_name == 'play_video':
-                if not self._video_player:
+            if ev.event_name == 'wake_word':
+                Logger.info('Handling wake word in main')
+                if self._sm.current == ScreenNames.video:
+                    self._video_screen.pause()
+            elif ev.event_name == 'unknown_command':
+                self.unknown()
+            elif ev.event_name == 'expression_done':
+                self._switch_screens(ScreenNames.main)
+            elif ev.event_name == 'play_video':
+                if self._sm.current != ScreenNames.video:
                     # Build up filename
                     season = ev_data.get('season')
                     episode = ev_data.get('episode')
                     pth = path.expanduser(f'~/work/media/adventure time.s{season:02}e{episode:02}.mkv')
-                    self._video_player = VideoPlayer(source=pth)
-                    self._video_player.state = 'play'
-                    self._video_player.options = {
-                        'eos': 'stop',
-                    }
-                    self._layout.remove_widget(self._image)
-                    self._layout.add_widget(self._video_player)
+                    self._video_screen.set_video_file(pth)
+                    self._sm.current = ScreenNames.video
                 else:
-                    self._video_player.state = 'play'
+                    # Resume
+                    self._video_screen.play()
             elif ev.event_name == 'pause':
-                self._video_player.state = 'pause'
+                self._video_screen.pause()
             elif ev.event_name == 'stop':
-                self._video_player.state = 'stop'
-                if self._video_player:
-                    self._layout.remove_widget(self._video_player)
-                    self._video_player = None
-                    self._layout.add_widget(self._image)
+                Logger.info('Processing stop...')
+                self._video_screen.stop()
+                Logger.info('Switching to main screen...')
+                self._sm.current = ScreenNames.main
+                Logger.info('Done processing stop...')
+
             # Games
             elif ev.event_name == 'play_game':
                 game_name = ev_data.get('game')
@@ -93,5 +118,22 @@ class MainApp(App):
                     self._layout.remove_widget(self._image)
                     self._layout.add_widget(self._game_widget)
 
+    def listen(self):
+        self._previous_screen = self._sm.current
+        self._sm.current = ScreenNames.listening
 
-MainApp().run()
+    def unlisten(self):
+        if not self._previous_screen:
+            self._sm.current = self._previous_screen
+            self._previous_screen = None
+
+    def unknown(self):
+        self._sm.current = ScreenNames.dont_know
+
+    def _switch_screens(self, screen_name: str):
+        self._sm.current = screen_name
+
+
+# run the app
+sample_app = MainApp()
+sample_app.run()
