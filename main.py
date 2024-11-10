@@ -63,7 +63,7 @@ class MainApp(MDApp):
         return self._sm
 
     def on_start(self):
-        self._ev_clock = Clock.schedule_interval(self._process_events, .5)
+        self._ev_clock = Clock.schedule_interval(self._process_events, 0.5)
 
     def _process_events(self, dt):
         # Check for events
