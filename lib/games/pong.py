@@ -1,4 +1,8 @@
-from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.popup import Popup
+from kivy.uix.screenmanager import Screen
 from kivy.uix.widget import Widget
 from kivy.properties import (
     NumericProperty, ReferenceListProperty, ObjectProperty
@@ -7,10 +11,22 @@ from kivy.vector import Vector
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.logger import Logger
-from lib.constants import CTRL_AXIS_VERTICAL, CTRL_UP_ARROW, CTRL_DOWN_ARROW
+from lib.event_queue import BmoEvent, add_event
+from lib.kivy_utils import JOY_ACITON_ARROW_UP, JOY_ACTION_ARROW_DOWN, JOY_ACTION_SELECT_BUTTON_DOWN, JoystickHandler
+from lib.widgets import BmoMenu
 
 
 VERT_OFFSET = 20
+WINNING_SCORE = 10
+
+MNU_ITEM_RESUME = 'Resume'
+MNU_ITEM_NEW_GAME = 'New Game - Player vs. Player'
+MNU_ITEM_PLAYER_VS_PLAYER = 'Player vs. Player'
+MNU_ITEM_EXIT = 'Exit'
+
+
+class PongMenu(ScrollView):
+    pass
 
 
 class PongPaddle(Widget):
@@ -39,7 +55,7 @@ class PongBall(Widget):
         self.pos = Vector(*self.velocity) + self.pos
 
 
-class PongGame(Widget):
+class PongGame(Widget, JoystickHandler):
     ball = ObjectProperty(None)
     player1 = ObjectProperty(None)
     player2 = ObjectProperty(None)
@@ -48,14 +64,21 @@ class PongGame(Widget):
         super().__init__(**kwargs)
         self._initialized = False
 
-        # Setup callbacks
-        Window.bind(on_joy_hat=self.on_joy_hat)
-        Window.bind(on_joy_ball=self.on_joy_ball)
-        Window.bind(on_joy_axis=self.on_joy_axis)
-        Window.bind(on_joy_button_up=self.on_joy_button_up)
-        Window.bind(on_joy_button_down=self.on_joy_button_down)
+        self._clk = None
 
-        Clock.schedule_interval(self.update, 1.0 / 60.0)
+    def start_game(self):
+        if self._clk:
+            self._clk.cancel()
+        self.player1.score = 0
+        self.player2.score = 0
+        self.player1.center_y = self.center_y
+        self.player2.center_y = self.center_y
+
+        # Setup callbacks
+        self.bind_joystick(self.on_joystick)
+
+        self.serve_ball()
+        self._clk = Clock.schedule_interval(self.update, 1.0 / 60.0)
 
     def serve_ball(self, vel=(4, 0)):
         self.ball.center = self.center
@@ -78,37 +101,93 @@ class PongGame(Widget):
         # went off to a side to score point?
         if self.ball.x < self.x:
             self.player2.score += 1
+
+            if self.player2.score >= WINNING_SCORE:
+                self._end_game()
+                return
+
             self.serve_ball(vel=(4, 0))
         if self.ball.right > self.width:
             self.player1.score += 1
+            if self.player1.score >= WINNING_SCORE:
+                self._end_game()
             self.serve_ball(vel=(-4, 0))
 
+    def on_joystick(self, stick_id, action):
+        if stick_id == 0:
+            player = self.player1
+        elif stick_id == 1:
+            player = self.player2
 
-    def on_joy_axis(self, win, stick_id, axis_id, value):
-        if axis_id == 1:
-            if stick_id == 0:
-                player = self.player1
-            elif stick_id == 1:
-                player = self.player2
+        if player:
+            if action == JOY_ACITON_ARROW_UP:
+                if (player.top + VERT_OFFSET) < self.height:
+                    player.center_y += VERT_OFFSET
+            elif action == JOY_ACTION_ARROW_DOWN:
+                if (player.top - VERT_OFFSET - player.height) > 0:
+                    player.center_y -= VERT_OFFSET
+            elif action == JOY_ACTION_SELECT_BUTTON_DOWN:
+                self._pause_resume_game()
 
-            if player:
-                if value == CTRL_UP_ARROW:
-                    if (player.top + VERT_OFFSET) < self.height:
-                        player.center_y += VERT_OFFSET
-                elif value == CTRL_DOWN_ARROW:
-                    if (player.top - VERT_OFFSET - player.height) > 0:
-                        player.center_y -= VERT_OFFSET
+    def _end_game(self):
+        Logger.info('Game over')
+        self._halt_game()
+        self.main_menu()
 
-        Logger.info(f'Axis [{stick_id}]: [{axis_id}]: {value}')
+    def _halt_game(self):
+        if self._clk:
+            self._clk.cancel()
+            self._clk = None
+        self.unbind_joystick()
 
-    def on_joy_ball(self, win, stickid, ballid, xvalue, yvalue):
-        Logger.info(f'Ball [{stickid}]: [{ballid}]: {xvalue}, {yvalue}')
+    def _pause_resume_game(self):
+        if self._clk:
+            self._clk.cancel()
+            self._clk = None
+            self.unbind_joystick()
+            mnu =  BmoMenu(
+                title='Pong',
+                menu_items=[MNU_ITEM_RESUME, MNU_ITEM_NEW_GAME, MNU_ITEM_EXIT],
+                callback=self.menu_callback)
+            mnu.open()
+        else:
+            self.bind_joystick(self.on_joystick)
+            self._clk = Clock.schedule_interval(self.update, 1.0 / 60.0)
 
-    def on_joy_hat(self, win, stickid, hatid, value):
-        Logger.info(f'Hat [{stickid}]: [{hatid}]: {value}')
+    def main_menu(self):
+        mnu =  BmoMenu(
+            title='Pong',
+            menu_items=[MNU_ITEM_PLAYER_VS_PLAYER, MNU_ITEM_EXIT],
+            callback=self.menu_callback)
+        mnu.open()
 
-    def on_joy_button_down(self, win, stickid, buttonid):
-        Logger.info(f'Button down [{stickid}]: {buttonid}')
+    def menu_callback(self, cmd: str):
+        Logger.info(f'Menu item: {cmd}')
 
-    def on_joy_button_up(self, win, stickid, buttonid):
-        Logger.info(f'Button up [{stickid}]: {buttonid}')
+        if cmd == MNU_ITEM_EXIT:
+            add_event(BmoEvent('leave_screen', {}))
+        elif cmd == MNU_ITEM_PLAYER_VS_PLAYER:
+            self.start_game()
+        elif cmd == MNU_ITEM_RESUME:
+            self._pause_resume_game()
+        elif cmd == MNU_ITEM_NEW_GAME:
+            self._halt_game()
+            self.start_game()
+
+
+class PongScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._game = PongGame()
+        self.add_widget(self._game)
+
+    def play(self):
+        self._game.main_menu()
+
+    def on_enter(self):
+        Logger.info('ENTER Pong screen')
+        # self._game.play()
+
+    def on_leave(self):
+        Logger.info('LEAVE Pong screen')
+        # self._game.stop()

@@ -24,14 +24,22 @@ class SpeechListener:
                 context_path=f'{root_path}/media/stt_model.rhn',
                 inference_callback=self.inference_callback,
             )
+            self.recorder = None
 
-            self.recorder = PvRecorder(
-                frame_length=self.picovoice.frame_length,
-                device_index=-1,
-            )
-            self.recorder.start()
+            for idx in range(1, 4):
+                try:
+                    self.recorder = PvRecorder(
+                        frame_length=self.picovoice.frame_length,
+                        device_index=idx,
+                    )
+                    self.recorder.start()
+                    break
+                except Exception as e:
+                    Logger.exception(f'Failed to start recorder with device index {idx}.')
+                    if self.recorder:
+                        self.recorder.delete()
+                        self.recorder = None
             Logger.info('Listening ... (Press Ctrl+C to exit)\n')
-
 
 
             # add_event(BmoEvent('play_game', {'game': 'pong'}))
@@ -97,9 +105,10 @@ class SpeechListener:
             add_event(BmoEvent('unknown_command', {}))
 
     def listen(self):
-        while True:
-            pcm =self. recorder.read()
-            self.picovoice.process(pcm)
+        if self.recorder:
+            while True:
+                pcm =self. recorder.read()
+                self.picovoice.process(pcm)
         return True
 
     def shutdown(self):

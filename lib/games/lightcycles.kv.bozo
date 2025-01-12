@@ -1,0 +1,31 @@
+<LightCycle>:
+    size: 20, 20
+    canvas:
+        Color:
+            rgba: self.color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<LightCyclesGame>:
+    canvas.before:
+        Color:
+            rgb: 0.1, 0.1, 0.1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Label:
+        font_size: 40
+        pos_hint: {'top': 0.95}
+        size_hint: 1, 0.1
+        text: 'Light Cycles'
+        color: 0, 1, 1, 1
+
+<LightCyclesScreen>:
+    canvas.before:
+        Color:
+            rgb: 0, 0, 0
+        Rectangle:
+            pos: self.pos
+            size: self.size

@@ -32,3 +32,23 @@ class ExpressionScreen(VideoScreen):
 class DontKnowScreen(ExpressionScreen):
     def __init__(self, **kwargs):
         super().__init__(expression_name='i-do-not-understand', **kwargs)
+
+
+class TryToDoThatScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='ok-i-will-try-to-do-that', **kwargs)
+
+
+class GoodMorningScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='good-morning', **kwargs)
+
+
+class GoodAfternoonScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='good-afternoon', **kwargs)
+
+
+class GoodEveningScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='good-evening', **kwargs)

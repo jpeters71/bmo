@@ -5,19 +5,26 @@ from lib.bmo_player import BmoPlayer
 from kivy.uix.video import Video
 from kivy.logger import Logger
 
+from lib.event_queue import BmoEvent, add_event
+
 
 class VideoScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._bgbox = MDBoxLayout()
-        self._bgbox.background
+        # self._bgbox.background =
         self._player = Video(allow_stretch=False, keep_ratio=False, size_hint_y=1)
         self._bgbox.add_widget(self._player)
+        self._bgbox.md_bg_color = [0, 0, 0, 1]  # Set background color to black
         self.add_widget(self._bgbox)
         self._current_file = None
+        self._leave_event = None
 
     def set_video_file(self, current_file: str):
         self._current_file = current_file
+
+    def set_leave_event(self, leave_event: BmoEvent):
+        self._leave_event = leave_event
 
     def play(self):
         self._player.state='play'
@@ -27,6 +34,8 @@ class VideoScreen(Screen):
 
     def stop(self):
         self._player.state='stop'
+        #self._player.source = ''
+        add_event(BmoEvent('leave_screen', {}))
 
     def on_enter(self):
         Logger.info('ENTER Video screen')
@@ -36,5 +45,10 @@ class VideoScreen(Screen):
         self.play()
 
     def on_leave(self):
-        self._player.unload()
+        Logger.info('LEAVE Video screen')
+        if not self._leave_event:
+            add_event(BmoEvent('leave_screen', {}))
+        else:
+            add_event(self._leave_event)
+            self._leave_event = None
 

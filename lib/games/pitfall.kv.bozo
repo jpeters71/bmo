@@ -1,0 +1,39 @@
+<Player>:
+    size: 40, 60
+    canvas:
+        Color:
+            rgba: 0, 1, 0, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<Obstacle>:
+    size: 80, 40
+    canvas:
+        Color:
+            rgba: 1, 0, 0, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<PitfallGame>:
+    canvas.before:
+        Color:
+            rgba: 0.1, 0.1, 0.1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+        # Draw ground
+        Color:
+            rgba: 0.3, 0.2, 0.1, 1
+        Rectangle:
+            pos: 0, 0
+            size: self.width, 60
+
+    Label:
+        font_size: 30
+        pos_hint: {'top': 0.95}
+        size_hint: 1, 0.1
+        text: f'Score: {root.score}'
+        color: 1, 1, 1, 1

@@ -1,3 +1,7 @@
+#:kivy 2.3.0
+#:import FocusButton lib.widgets.FocusButton
+#:import MDList kivymd.uix.list.MDList
+
 # ========================================
 # Main Screen
 # ----------------------------------------
@@ -21,6 +25,23 @@
 # ========================================
 # Pong
 # ----------------------------------------
+<PongMenu>:
+    MDList:
+        id: container
+
+    # orientation: "vertical"
+    # title: "Pong"
+    # FocusButton:
+    #     text: "Press Me 101!"
+    #     focus: True
+    # FocusButton:
+    #     text: "Press Me 1012"
+    # FocusButton:
+    #     text: "Press Me 103"
+    # FocusButton:
+    #     text: "Press Me 104"
+
+
 <PongBall>:
     size: 50, 50
     canvas:
@@ -41,6 +62,14 @@
     player2: player_right
 
     canvas:
+        Color:
+            rgba: 0, .7, 0, 1
+        Rectangle:
+            pos: 0, 0
+            size: self.width, self.height
+
+        Color:
+            rgba: 1, 1, 1, 1
         Rectangle:
             pos: self.center_x - 5, 0
             size: 10, self.height
@@ -150,3 +179,99 @@
         size: root.player_size, root.player_size
         pos: root.size[0] / 10, 9 * root.size[1] / 10
         text: str(root.score)
+
+
+
+# ========================================
+# Miscelaneous Widgets
+# ----------------------------------------
+<FocusButton>:
+    current_focus: False
+
+
+
+# ========================================
+# Light Cycles
+# ----------------------------------------
+<LightCycle>:
+    size: 20, 20
+    canvas:
+        Color:
+            rgba: self.color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<LightCyclesGame>:
+    canvas.before:
+        Color:
+            rgb: 0.1, 0.1, 0.1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Label:
+        font_size: 40
+        pos_hint: {'top': 0.95}
+        size_hint: 1, 0.1
+        text: 'Light Cycles'
+        color: 0, 1, 1, 1
+
+<LightCyclesScreen>:
+    canvas.before:
+        Color:
+            rgb: 0, 0, 0
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+# ========================================
+# Pitfall
+# ----------------------------------------
+<PitfallScreen>:
+    canvas:
+        Color:
+            rgb: 0, 0, 0
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<Player>:
+    size: 40, 60
+    canvas:
+        Color:
+            rgba: 0, 1, 0, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<Obstacle>:
+    size: 80, 40
+    canvas:
+        Color:
+            rgba: 1, 0, 0, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<PitfallGame>:
+    canvas.before:
+        Color:
+            rgba: 0.1, 0.1, 0.1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+        # Draw ground
+        Color:
+            rgba: 0.3, 0.2, 0.1, 1
+        Rectangle:
+            pos: 0, 0
+            size: self.width, 60
+
+    Label:
+        font_size: 30
+        pos_hint: {'top': 0.95}
+        size_hint: 1, 0.1
+        text: f'Score: {root.score}'
+        color: 1, 1, 1, 1
