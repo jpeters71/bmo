@@ -10,10 +10,14 @@ from kivy.clock import Clock
 from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Rectangle
 from kivy.logger import Logger
+from kivy.uix.screenmanager import Screen
 
-from lib.constants import CTRL_AXIS_VERTICAL, CTRL_AXIS_HORIZONTAL, CTRL_UP_ARROW, CTRL_DOWN_ARROW, CTRL_LEFT_ARROW, CTRL_RIGHT_ARROW, CTRL_RELEASE_ARROW
+from lib.constants import CTRL_AXIS_VERTICAL, CTRL_AXIS_HORIZONTAL, CTRL_UP_ARROW, CTRL_DOWN_ARROW, CTRL_LEFT_ARROW, CTRL_RIGHT_ARROW, CTRL_RELEASE_ARROW, MenuItems
 
 import random
+
+from lib.event_queue import BmoEvent, add_event
+from lib.widgets import BmoMenu
 
 
 class TetrisGameOver(RelativeLayout):
@@ -452,38 +456,39 @@ class TetrisWidget(GridLayout):
 
     def fall(self, dt):
         self.time += dt
-
-        if self.time >= self.game_speed:
-            self.time = 0
-            for i in self.shapes[-1]:
-                i.position_y -= 1
+        if self.shapes:
+            if self.time >= self.game_speed:
+                self.time = 0
+                for i in self.shapes[-1]:
+                    i.position_y -= 1
 
 
     def size_change(self, window_width):
         self.unit = window_width / 10
-
-        for i in self.shapes:
-            for j in i:
-                j.pos = (j.position_x * self.unit, j.position_y * self.unit)
-                j.size = (self.unit, self.unit)
+        if self.shapes:
+            for i in self.shapes:
+                for j in i:
+                    j.pos = (j.position_x * self.unit, j.position_y * self.unit)
+                    j.size = (self.unit, self.unit)
 
 
     def collisions_bottom(self):
-        for i in self.shapes[0:-1]:
-            for j in i:
-                for k in self.shapes[-1]:
-                    if j.position_y + 1 == k.position_y and j.position_x == k.position_x:
+        if self.shapes:
+            for i in self.shapes[0:-1]:
+                for j in i:
+                    for k in self.shapes[-1]:
+                        if j.position_y + 1 == k.position_y and j.position_x == k.position_x:
+                            for j in self.shapes[-1]:
+                                j.active = False
+            for i in self.shapes[-1]:
+                if i.active == True:
+                    if i.position_y == 0:
                         for j in self.shapes[-1]:
                             j.active = False
-        for i in self.shapes[-1]:
-            if i.active == True:
-                if i.position_y == 0:
-                    for j in self.shapes[-1]:
-                        j.active = False
-            else:
-                self.new_shape()
-                self.delete_row()
-                return True
+                else:
+                    self.new_shape()
+                    self.delete_row()
+                    return True
 
 
     def collisions_right(self):
@@ -644,9 +649,9 @@ class TetrisGame(BoxLayout):
 
         self.add_widget(self.tetris)
         self.add_widget(self.panel)
-
-        Clock.schedule_interval(self.update, 1/120)
-
+        self._pause = False
+        self._clk = None
+        self.game_over = None
 
     def on_key_down(self, keyboard, keycode, text, modifiers):
         if keycode[1] == "left":
@@ -658,7 +663,6 @@ class TetrisGame(BoxLayout):
         if keycode[1] == "down":
             self.tetris.game_speed = 0.1
         return True
-
 
     def on_key_up(self, keyboard, keycode):
         if keycode[1] == "down":
@@ -689,7 +693,6 @@ class TetrisGame(BoxLayout):
         self._keyboard.unbind(on_key_up = self.on_key_up)
         self._keyboard = None
 
-
     def update(self, dt):
         if not self.game_over_state:
             if self.tetris.game_speed == 0.1:
@@ -700,7 +703,6 @@ class TetrisGame(BoxLayout):
             self.tetris.update_game(self.tetris.width, dt)
             self.panel.update(self.tetris.r)
             self.is_over()
-
 
     def is_over(self):
         if not self.game_over_state:
@@ -720,13 +722,50 @@ class TetrisGame(BoxLayout):
                         break
 
 
-    def new_game(self):
-        self.remove_widget(self.game_over)
+    def start_game(self):
+        if self.game_over:
+            self.remove_widget(self.game_over)
         self.tetris.clear_widgets()
         self.tetris.shapes.clear()
         self.tetris.canvas.clear()
-        self.tetris.__init__()
+        self._clk = Clock.schedule_interval(self.update, 1/120)
 
         self.game_over_state = False
         self.points = 0
 
+    def main_menu(self):
+        mnu =  BmoMenu(
+            title='Snake',
+            menu_items=[MenuItems.PLAYER_VS_COMPUTER, MenuItems.EXIT],
+            callback=self.menu_callback)
+        mnu.open()
+
+    def menu_callback(self, cmd: str):
+        Logger.info(f'Menu item: {cmd}')
+
+        if cmd == MenuItems.EXIT:
+            add_event(BmoEvent('leave_screen', {}))
+        elif cmd == MenuItems.PLAYER_VS_COMPUTER:
+            if self._pause:
+                self._halt_game()
+            self.start_game()
+        elif cmd == MenuItems.RESUME:
+            self._pause_resume_game()
+
+
+class TetrisScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._game = TetrisGame()
+        self.add_widget(self._game)
+
+    def play(self):
+        self._game.main_menu()
+
+    def on_enter(self):
+        Logger.info('ENTER Tetris screen')
+        self._game.main_menu()
+
+    def on_leave(self):
+        Logger.info('LEAVE Tetris screen')
+        # self._game.stop()

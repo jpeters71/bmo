@@ -152,7 +152,7 @@
 <SnakeHead>:
     canvas:
         Color:
-            rgb: (1,1,1)
+            rgb: (0,0,1)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -160,7 +160,7 @@
 <SnakeTail>:
     canvas:
         Color:
-            rgba: (1,1,1,.8)
+            rgba: (0,0,1,.8)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -169,16 +169,25 @@
     head: snake_head
     fruit: snake_fruit
 
+    canvas.before:
+        Color:
+            rgba: .1, .1, .1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Label:
+        size: root.player_size, root.player_size
+        pos: root.size[0] / 10, 9 * root.size[1] / 10
+        text: str(root.score)
+        color: (0, 1, 0, 1)
+        font_size: 35
     SnakeHead:
         id: snake_head
         size: root.player_size - 2,root.player_size - 2
     SnakeFruit:
         id: snake_fruit
         size: root.player_size - 2, root.player_size - 2
-    Label:
-        size: root.player_size, root.player_size
-        pos: root.size[0] / 10, 9 * root.size[1] / 10
-        text: str(root.score)
 
 
 
@@ -189,11 +198,19 @@
     current_focus: False
 
 
-
 # ========================================
 # Light Cycles
 # ----------------------------------------
-<LightCycle>:
+
+<LightCycleHead>:
+    canvas:
+        Color:
+            rgba: self.color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<LightCycleTail>:
     size: 20, 20
     canvas:
         Color:

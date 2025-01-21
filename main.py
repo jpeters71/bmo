@@ -2,7 +2,7 @@ from datetime import datetime
 import os
 from kivy.config import Config
 
-from lib.games.lightcycles import LightCycle, LightCyclesScreen
+from lib.games.lightcycles import LightCyclesScreen
 from lib.games.pitfall import PitfallScreen
 from screens.admin_screens import ListeningScreen, MainScreen
 from screens.expression_screens import DontKnowScreen, GoodAfternoonScreen, GoodEveningScreen, GoodMorningScreen, TryToDoThatScreen
@@ -12,8 +12,8 @@ Config.read('./app_settings.ini')
 
 from lib.event_queue import BmoEvent, add_event, get_next_event
 from lib.games.pong import PongGame, PongScreen
-from lib.games.tetris import TetrisGame
-from lib.games.snake import SnakeGame
+from lib.games.tetris import TetrisGame, TetrisScreen
+from lib.games.snake import SnakeScreen
 from lib.listener import start_listening
 
 from kivymd.app import MDApp
@@ -58,7 +58,7 @@ class MainApp(MDApp):
     def build(self):
         self.theme_cls.material_style = 'M3'
         self._app_name = 'BMO'
-        Window.show_cursor = True
+        Window.show_cursor = False
         self._title = 'BMO'
         self._listener_thread = start_listening(ROOT_DIR)
         self._previous_screen = None
@@ -76,6 +76,8 @@ class MainApp(MDApp):
         self._sm.add_widget(GoodMorningScreen(name=ScreenNames.good_morning))
         self._sm.add_widget(GoodAfternoonScreen(name=ScreenNames.good_afternoon))
         self._sm.add_widget(GoodEveningScreen(name=ScreenNames.good_evening))
+        self._sm.add_widget(SnakeScreen(name=ScreenNames.snake))
+        self._sm.add_widget(TetrisScreen(name=ScreenNames.tetris))
 
         self._pong_game = PongScreen(name=ScreenNames.pong)
         self._sm.add_widget(self._pong_game)
@@ -103,8 +105,8 @@ class MainApp(MDApp):
                 self.unknown()
             elif ev.event_name == 'startup':
                 # self._sm.current = ScreenNames.pitfall
-                self._sm.current = ScreenNames.pong
-                self._pong_game.play()
+                # self._sm.current = ScreenNames.lightcycles
+                self._sm.current = ScreenNames.tetris
 
                 # self._startup()
             elif ev.event_name == 'leave_screen':

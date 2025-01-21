@@ -14,15 +14,11 @@ from kivy.logger import Logger
 from lib.event_queue import BmoEvent, add_event
 from lib.kivy_utils import JOY_ACITON_ARROW_UP, JOY_ACTION_ARROW_DOWN, JOY_ACTION_SELECT_BUTTON_DOWN, JoystickHandler
 from lib.widgets import BmoMenu
+from lib.constants import MenuItems
 
 
 VERT_OFFSET = 20
 WINNING_SCORE = 10
-
-MNU_ITEM_RESUME = 'Resume'
-MNU_ITEM_NEW_GAME = 'New Game - Player vs. Player'
-MNU_ITEM_PLAYER_VS_PLAYER = 'Player vs. Player'
-MNU_ITEM_EXIT = 'Exit'
 
 
 class PongMenu(ScrollView):
@@ -63,10 +59,11 @@ class PongGame(Widget, JoystickHandler):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._initialized = False
-
         self._clk = None
+        self._pause = False
 
     def start_game(self):
+        self._pause = False
         if self._clk:
             self._clk.cancel()
         self.player1.score = 0
@@ -144,10 +141,11 @@ class PongGame(Widget, JoystickHandler):
         if self._clk:
             self._clk.cancel()
             self._clk = None
+            self._pause = True
             self.unbind_joystick()
             mnu =  BmoMenu(
                 title='Pong',
-                menu_items=[MNU_ITEM_RESUME, MNU_ITEM_NEW_GAME, MNU_ITEM_EXIT],
+                menu_items=[MenuItems.RESUME, MenuItems.PLAYER_VS_PLAYER, MenuItems.EXIT],
                 callback=self.menu_callback)
             mnu.open()
         else:
@@ -157,22 +155,21 @@ class PongGame(Widget, JoystickHandler):
     def main_menu(self):
         mnu =  BmoMenu(
             title='Pong',
-            menu_items=[MNU_ITEM_PLAYER_VS_PLAYER, MNU_ITEM_EXIT],
+            menu_items=[MenuItems.PLAYER_VS_PLAYER, MenuItems.EXIT],
             callback=self.menu_callback)
         mnu.open()
 
     def menu_callback(self, cmd: str):
         Logger.info(f'Menu item: {cmd}')
 
-        if cmd == MNU_ITEM_EXIT:
+        if cmd == MenuItems.EXIT:
             add_event(BmoEvent('leave_screen', {}))
-        elif cmd == MNU_ITEM_PLAYER_VS_PLAYER:
+        elif cmd == MenuItems.PLAYER_VS_PLAYER:
+            if self._pause:
+                self._halt_game()
             self.start_game()
-        elif cmd == MNU_ITEM_RESUME:
+        elif cmd == MenuItems.RESUME:
             self._pause_resume_game()
-        elif cmd == MNU_ITEM_NEW_GAME:
-            self._halt_game()
-            self.start_game()
 
 
 class PongScreen(Screen):

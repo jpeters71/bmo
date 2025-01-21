@@ -24,3 +24,10 @@ KEY_DOWN = 274
 KEY_RIGHT = 275
 KEY_LEFT = 276
 KEY_ENTER = 13
+
+# Menu items
+class MenuItems:
+    RESUME = 'Resume'
+    PLAYER_VS_COMPUTER = 'New Game Player vs. Computer'
+    PLAYER_VS_PLAYER = 'New Game Player vs. Player'
+    EXIT = 'Exit'
