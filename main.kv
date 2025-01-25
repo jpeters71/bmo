@@ -125,18 +125,6 @@
             size: self.size
             pos: self.pos
 
-<TetrisGameOver>:
-    Button:
-        color: 0, 0.25, 0.3, 1
-        background_color: 0.15 ,0.15, 0.15, 1
-        font_size: self.height * 0.1
-        font_name: "label_font.ttf"
-        text: "n\ne\nw\n\ng\na\nm\ne"
-        pos_hint: {"center_x": .5, "center_y": 0.5}
-        size_hint: 1, 1
-        on_press: root.parent.new_game()
-        background_normal: ""
-
 
 # ========================================
 # Snake

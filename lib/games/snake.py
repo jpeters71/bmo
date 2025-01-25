@@ -1,25 +1,31 @@
+from random import randint
+
 from kivy.clock import Clock
 from kivy.core.window import Window
+from kivy.logger import Logger
+from kivy.properties import NumericProperty, ObjectProperty, StringProperty
+from kivy.uix.screenmanager import Screen
 from kivy.uix.widget import Widget
 from kivy.vector import Vector
-from kivy.properties import ObjectProperty, NumericProperty, StringProperty
-from random import randint
-from kivy.logger import Logger
-from kivy.uix.screenmanager import Screen
-
 from lib.constants import MenuItems
 from lib.event_queue import BmoEvent, add_event
 from lib.games import SmartGrid
-from lib.kivy_utils import JOY_ACITON_ARROW_UP, JOY_ACTION_ARROW_DOWN, JOY_ACTION_ARROW_LEFT, JOY_ACTION_ARROW_RIGHT, JOY_ACTION_SELECT_BUTTON_DOWN, JoystickHandler
+from lib.kivy_utils import (
+    JOY_ACITON_ARROW_UP,
+    JOY_ACTION_ARROW_DOWN,
+    JOY_ACTION_ARROW_LEFT,
+    JOY_ACTION_ARROW_RIGHT,
+    JOY_ACTION_SELECT_BUTTON_DOWN,
+    JoystickHandler,
+)
 from lib.widgets import BmoMenu
-
 
 WINDOW_HEIGHT = 480
 WINDOW_WIDTH = 800
 
 # note that 2 pixels are always subtracted from PLAYER_SIZE for better clarity
 PLAYER_SIZE = 40
-GAME_SPEED = .1
+GAME_SPEED = 0.1
 
 
 class SnakeFruit(Widget):
@@ -34,11 +40,13 @@ class SnakeTail(Widget):
 
 class SnakeHead(Widget):
     orientation = (PLAYER_SIZE, 0)
+
     def reset_pos(self):
         # positions the player roughly in the middle of the gameboard
-        self.pos = \
-            [int(WINDOW_WIDTH / 2 - (WINDOW_WIDTH / 2 % PLAYER_SIZE)),
-             int(WINDOW_HEIGHT / 2 - (WINDOW_HEIGHT / 2 % PLAYER_SIZE))]
+        self.pos = [
+            int(WINDOW_WIDTH / 2 - (WINDOW_WIDTH / 2 % PLAYER_SIZE)),
+            int(WINDOW_HEIGHT / 2 - (WINDOW_HEIGHT / 2 % PLAYER_SIZE)),
+        ]
         self.orientation = (PLAYER_SIZE, 0)
 
     def move(self):
@@ -63,8 +71,7 @@ class SnakeGame(Widget, JoystickHandler):
             raise ValueError("Player size should be at least 3 px")
 
         if WINDOW_HEIGHT < 3 * PLAYER_SIZE or WINDOW_WIDTH < 3 * PLAYER_SIZE:
-            raise ValueError(
-                "Window size must be at least 3 times larger than player size")
+            raise ValueError("Window size must be at least 3 times larger than player size")
         self._clk = None
         self._pause = False
         self.tail = []
@@ -88,21 +95,11 @@ class SnakeGame(Widget, JoystickHandler):
         self.tail = []
 
         # first two blocks added to the tail
-        self.tail.append(
-            SnakeTail(
-                pos=(self.head.pos[0] - PLAYER_SIZE, self.head.pos[1]),
-                size=(self.head.size)
-            )
-        )
+        self.tail.append(SnakeTail(pos=(self.head.pos[0] - PLAYER_SIZE, self.head.pos[1]), size=(self.head.size)))
         self.add_widget(self.tail[-1])
         self.occupied[self.tail[-1].pos] = True
 
-        self.tail.append(
-            SnakeTail(
-                pos=(self.head.pos[0] - 2 * PLAYER_SIZE, self.head.pos[1]),
-                size=(self.head.size)
-            )
-        )
+        self.tail.append(SnakeTail(pos=(self.head.pos[0] - 2 * PLAYER_SIZE, self.head.pos[1]), size=(self.head.size)))
         self.add_widget(self.tail[-1])
         self.occupied[self.tail[1].pos] = True
 
@@ -120,8 +117,7 @@ class SnakeGame(Widget, JoystickHandler):
         """
 
         # outside the boundaries of the game
-        if not (0 <= self.head.pos[0] < WINDOW_WIDTH) or \
-           not (0 <= self.head.pos[1] < WINDOW_HEIGHT):
+        if not (0 <= self.head.pos[0] < WINDOW_WIDTH) or not (0 <= self.head.pos[1] < WINDOW_HEIGHT):
             self._end_game()
             return
 
@@ -146,10 +142,7 @@ class SnakeGame(Widget, JoystickHandler):
         # check if we found the fruit, if so, add another tail
         if self.head.pos == self.fruit.pos:
             self.score += 1
-            self.tail.append(
-                SnakeTail(
-                    pos=self.head.pos,
-                    size=self.head.size))
+            self.tail.append(SnakeTail(pos=self.head.pos, size=self.head.size))
             self.add_widget(self.tail[-1])
             self.spawn_fruit()
 
@@ -159,13 +152,12 @@ class SnakeGame(Widget, JoystickHandler):
         while not found:
 
             # roll new random positions until one is free
-            roll = [PLAYER_SIZE *
-                    randint(0, int(WINDOW_WIDTH / PLAYER_SIZE) - 1),
-                    PLAYER_SIZE *
-                    randint(0, int(WINDOW_HEIGHT / PLAYER_SIZE) - 1)]
+            roll = [
+                PLAYER_SIZE * randint(0, int(WINDOW_WIDTH / PLAYER_SIZE) - 1),
+                PLAYER_SIZE * randint(0, int(WINDOW_HEIGHT / PLAYER_SIZE) - 1),
+            ]
 
-            if self.occupied[roll] is True or \
-                    roll == self.head.pos:
+            if self.occupied[roll] is True or roll == self.head.pos:
                 continue
 
             found = True
@@ -173,8 +165,7 @@ class SnakeGame(Widget, JoystickHandler):
         self.fruit.move(roll)
 
     def key_action(self, *args):
-        """This handles user input
-        """
+        """This handles user input"""
         command = list(args)[3]
 
         if command == 'w' or command == 'up':
@@ -190,13 +181,13 @@ class SnakeGame(Widget, JoystickHandler):
 
     def on_joystick(self, stick_id, action):
         if action == JOY_ACITON_ARROW_UP:
-                self.head.orientation = (0, PLAYER_SIZE)
+            self.head.orientation = (0, PLAYER_SIZE)
         elif action == JOY_ACTION_ARROW_DOWN:
-                self.head.orientation = (0, -PLAYER_SIZE)
+            self.head.orientation = (0, -PLAYER_SIZE)
         elif action == JOY_ACTION_ARROW_LEFT:
-                self.head.orientation = (-PLAYER_SIZE, 0)
+            self.head.orientation = (-PLAYER_SIZE, 0)
         elif action == JOY_ACTION_ARROW_RIGHT:
-                self.head.orientation = (PLAYER_SIZE, 0)
+            self.head.orientation = (PLAYER_SIZE, 0)
         elif action == JOY_ACTION_SELECT_BUTTON_DOWN:
             self._pause_resume_game()
 
@@ -217,20 +208,18 @@ class SnakeGame(Widget, JoystickHandler):
             self._clk = None
             self._pause = True
             self.unbind_joystick()
-            mnu =  BmoMenu(
+            mnu = BmoMenu(
                 title='Snake',
                 menu_items=[MenuItems.RESUME, MenuItems.PLAYER_VS_COMPUTER, MenuItems.EXIT],
-                callback=self.menu_callback)
+                callback=self.menu_callback,
+            )
             mnu.open()
         else:
             self.bind_joystick(self.on_joystick)
             self._clk = Clock.schedule_interval(self.update, 1.0 / 60.0)
 
     def main_menu(self):
-        mnu =  BmoMenu(
-            title='Snake',
-            menu_items=[MenuItems.PLAYER_VS_COMPUTER, MenuItems.EXIT],
-            callback=self.menu_callback)
+        mnu = BmoMenu(title='Snake', menu_items=[MenuItems.PLAYER_VS_COMPUTER, MenuItems.EXIT], callback=self.menu_callback)
         mnu.open()
 
     def menu_callback(self, cmd: str):

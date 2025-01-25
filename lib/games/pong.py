@@ -1,21 +1,18 @@
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.scrollview import ScrollView
-from kivy.uix.popup import Popup
-from kivy.uix.screenmanager import Screen
-from kivy.uix.widget import Widget
-from kivy.properties import (
-    NumericProperty, ReferenceListProperty, ObjectProperty
-)
-from kivy.vector import Vector
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.logger import Logger
+from kivy.properties import NumericProperty, ObjectProperty, ReferenceListProperty
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.popup import Popup
+from kivy.uix.screenmanager import Screen
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.widget import Widget
+from kivy.vector import Vector
+from lib.constants import MenuItems
 from lib.event_queue import BmoEvent, add_event
 from lib.kivy_utils import JOY_ACITON_ARROW_UP, JOY_ACTION_ARROW_DOWN, JOY_ACTION_SELECT_BUTTON_DOWN, JoystickHandler
 from lib.widgets import BmoMenu
-from lib.constants import MenuItems
-
 
 VERT_OFFSET = 20
 WINNING_SCORE = 10
@@ -143,20 +140,18 @@ class PongGame(Widget, JoystickHandler):
             self._clk = None
             self._pause = True
             self.unbind_joystick()
-            mnu =  BmoMenu(
+            mnu = BmoMenu(
                 title='Pong',
                 menu_items=[MenuItems.RESUME, MenuItems.PLAYER_VS_PLAYER, MenuItems.EXIT],
-                callback=self.menu_callback)
+                callback=self.menu_callback,
+            )
             mnu.open()
         else:
             self.bind_joystick(self.on_joystick)
             self._clk = Clock.schedule_interval(self.update, 1.0 / 60.0)
 
     def main_menu(self):
-        mnu =  BmoMenu(
-            title='Pong',
-            menu_items=[MenuItems.PLAYER_VS_PLAYER, MenuItems.EXIT],
-            callback=self.menu_callback)
+        mnu = BmoMenu(title='Pong', menu_items=[MenuItems.PLAYER_VS_PLAYER, MenuItems.EXIT], callback=self.menu_callback)
         mnu.open()
 
     def menu_callback(self, cmd: str):

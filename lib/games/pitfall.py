@@ -1,3 +1,5 @@
+"""DOES NOT CURRENTLY WORK!!!"""
+
 from kivy.uix.widget import Widget
 from kivy.uix.screenmanager import Screen
 from kivy.properties import NumericProperty, ObjectProperty, ListProperty, BooleanProperty
@@ -14,6 +16,7 @@ JUMP_SPEED = 15
 PLAYER_SPEED = 5
 SCROLL_SPEED = 3
 
+
 class Player(Widget):
     velocity_y = NumericProperty(0)
     velocity_x = NumericProperty(0)
@@ -28,11 +31,13 @@ class Player(Widget):
             self.velocity_y = JUMP_SPEED
             self.is_jumping = True
 
+
 class Obstacle(Widget):
     obstacle_type = NumericProperty(0)  # 0: pit, 1: log, 2: rope
 
     def move(self):
         self.x -= SCROLL_SPEED
+
 
 class PitfallGame(Widget):
     player = ObjectProperty(None)
@@ -53,15 +58,12 @@ class PitfallGame(Widget):
         self.obstacles = []
         self.add_widget(self.player)
         self._generate_initial_obstacles()
-        self._clock = Clock.schedule_interval(self.update, 1.0/60.0)
+        self._clock = Clock.schedule_interval(self.update, 1.0 / 60.0)
 
     def _generate_initial_obstacles(self):
         # Generate initial set of obstacles
         for i in range(5):
-            obstacle = Obstacle(
-                pos=(800 + i * 300, 60),
-                obstacle_type=random.randint(0, 2)
-            )
+            obstacle = Obstacle(pos=(800 + i * 300, 60), obstacle_type=random.randint(0, 2))
             self.obstacles.append(obstacle)
             self.add_widget(obstacle)
 
@@ -94,17 +96,13 @@ class PitfallGame(Widget):
         self.score += 1
 
     def _add_new_obstacle(self):
-        obstacle = Obstacle(
-            pos=(self.width + 100, 60),
-            obstacle_type=random.randint(0, 2)
-        )
+        obstacle = Obstacle(pos=(self.width + 100, 60), obstacle_type=random.randint(0, 2))
         self.obstacles.append(obstacle)
         self.add_widget(obstacle)
 
     def _check_collision(self, player, obstacle):
         if obstacle.obstacle_type == 0:  # pit
-            return (player.collide_widget(obstacle) and
-                   player.y < obstacle.top)
+            return player.collide_widget(obstacle) and player.y < obstacle.top
         else:
             return player.collide_widget(obstacle)
 
@@ -125,10 +123,7 @@ class PitfallGame(Widget):
         if self._clock:
             self._clock.cancel()
 
-        mnu = BmoMenu(
-            title=f'Game Over! Score: {self.score}',
-            menu_items=['Play Again', 'Exit'],
-            callback=self.menu_callback)
+        mnu = BmoMenu(title=f'Game Over! Score: {self.score}', menu_items=['Play Again', 'Exit'], callback=self.menu_callback)
         mnu.open()
 
     def menu_callback(self, cmd: str):

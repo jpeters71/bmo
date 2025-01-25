@@ -2,7 +2,7 @@ from kivy.core.window import Window
 
 from typing import Callable
 
-from lib.constants import CTLR_BUTTON_A, CTLR_BUTTON_B, CTLR_BUTTON_SELECT, CTLR_BUTTON_START, CTRL_AXIS_HORIZONTAL, CTRL_AXIS_VERTICAL, CTRL_DOWN_ARROW, CTRL_LEFT_ARROW, CTRL_RIGHT_ARROW, CTRL_UP_ARROW
+from lib.constants import CTLR_BUTTON_A, CTLR_BUTTON_B, CTLR_BUTTON_SELECT, CTLR_BUTTON_START, CTRL_AXIS_HORIZONTAL, CTRL_AXIS_VERTICAL, CTRL_DOWN_ARROW, CTRL_LEFT_ARROW, CTRL_RELEASE_ARROW, CTRL_RIGHT_ARROW, CTRL_UP_ARROW
 
 
 JOY_ACTION_A_BUTTON_DOWN = 1
@@ -17,6 +17,7 @@ JOY_ACITON_ARROW_UP = 9
 JOY_ACTION_ARROW_DOWN = 10
 JOY_ACTION_ARROW_LEFT = 11
 JOY_ACTION_ARROW_RIGHT = 12
+JOY_ACITON_RELEASE_ARROW = 13
 
 
 class JoystickHandler:
@@ -46,11 +47,15 @@ class JoystickHandler:
                 self._callback(stick_id, JOY_ACITON_ARROW_UP)
             elif value == CTRL_DOWN_ARROW:
                 self._callback(stick_id, JOY_ACTION_ARROW_DOWN)
+            elif value == CTRL_RELEASE_ARROW:
+                self._callback(stick_id, JOY_ACITON_RELEASE_ARROW)
         elif axis_id == CTRL_AXIS_HORIZONTAL:
             if value == CTRL_LEFT_ARROW:
                 self._callback(stick_id, JOY_ACTION_ARROW_LEFT)
             elif value == CTRL_RIGHT_ARROW:
                 self._callback(stick_id, JOY_ACTION_ARROW_RIGHT)
+            elif value == CTRL_RELEASE_ARROW:
+                self._callback(stick_id, JOY_ACITON_RELEASE_ARROW)
 
     def _on_joy_ball(self, win, stickid, ballid, xvalue, yvalue):
         # We don't currently need this.

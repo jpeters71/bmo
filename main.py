@@ -1,32 +1,33 @@
-from datetime import datetime
 import os
-from kivy.config import Config
+from datetime import datetime
 
+from kivy.config import Config
 from lib.games.lightcycles import LightCyclesScreen
-from lib.games.pitfall import PitfallScreen
 from screens.admin_screens import ListeningScreen, MainScreen
-from screens.expression_screens import DontKnowScreen, GoodAfternoonScreen, GoodEveningScreen, GoodMorningScreen, TryToDoThatScreen
+from screens.expression_screens import (
+    DontKnowScreen,
+    GoodAfternoonScreen,
+    GoodEveningScreen,
+    GoodMorningScreen,
+    TryToDoThatScreen,
+)
 from screens.video_screen import VideoScreen
 
 Config.read('./app_settings.ini')
 
-from lib.event_queue import BmoEvent, add_event, get_next_event
-from lib.games.pong import PongGame, PongScreen
-from lib.games.tetris import TetrisGame, TetrisScreen
-from lib.games.snake import SnakeScreen
-from lib.listener import start_listening
-
-from kivymd.app import MDApp
-
-from kivy.core.window import Window
-from kivy.lang import Builder
-from kivy.clock import Clock
-from kivy.logger import Logger
-
-
-from kivy.uix.screenmanager import ScreenManager, NoTransition
 from os import path
 
+from kivy.clock import Clock
+from kivy.core.window import Window
+from kivy.lang import Builder
+from kivy.logger import Logger
+from kivy.uix.screenmanager import NoTransition, ScreenManager
+from kivymd.app import MDApp
+from lib.event_queue import BmoEvent, add_event, get_next_event
+from lib.games.pong import PongGame, PongScreen
+from lib.games.snake import SnakeScreen
+from lib.games.tetris import TetrisGame, TetrisScreen
+from lib.listener import start_listening
 
 ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -47,7 +48,6 @@ class ScreenNames:
     tetris = 'tetris'
     snake = 'snake'
     lightcycles = 'ligtcycles'
-    pitfall = 'pitfall'
 
 
 # Create the App class
@@ -83,7 +83,6 @@ class MainApp(MDApp):
         self._sm.add_widget(self._pong_game)
 
         self._sm.add_widget(LightCyclesScreen(name=ScreenNames.lightcycles))
-        self._sm.add_widget(PitfallScreen(name=ScreenNames.pitfall))
 
         return self._sm
 
@@ -104,11 +103,10 @@ class MainApp(MDApp):
             elif ev.event_name == 'unknown_command':
                 self.unknown()
             elif ev.event_name == 'startup':
-                # self._sm.current = ScreenNames.pitfall
-                # self._sm.current = ScreenNames.lightcycles
-                self._sm.current = ScreenNames.tetris
+                # For testing only
+                # self._sm.current = ScreenNames.tetris
 
-                # self._startup()
+                self._startup()
             elif ev.event_name == 'leave_screen':
                 self._sm.current = ScreenNames.main
             elif ev.event_name == 'expression_done':

@@ -1,25 +1,32 @@
-from kivy.uix.widget import Widget
-from kivy.uix.screenmanager import Screen
-from kivy.properties import NumericProperty, ObjectProperty, ListProperty
 from kivy.clock import Clock
 from kivy.core.window import Window
+from kivy.graphics import Color, Line, Rectangle
 from kivy.logger import Logger
-from kivy.graphics import Line, Color, Rectangle
+from kivy.properties import ListProperty, NumericProperty, ObjectProperty
+from kivy.uix.screenmanager import Screen
+from kivy.uix.widget import Widget
+from kivy.vector import Vector
 from lib.constants import MenuItems
 from lib.event_queue import BmoEvent, add_event
 from lib.games import SmartGrid
-from lib.kivy_utils import JOY_ACITON_ARROW_UP, JOY_ACTION_ARROW_DOWN, JOY_ACTION_ARROW_LEFT, JOY_ACTION_ARROW_RIGHT, JOY_ACTION_SELECT_BUTTON_DOWN, JoystickHandler
+from lib.kivy_utils import (
+    JOY_ACITON_ARROW_UP,
+    JOY_ACTION_ARROW_DOWN,
+    JOY_ACTION_ARROW_LEFT,
+    JOY_ACTION_ARROW_RIGHT,
+    JOY_ACTION_SELECT_BUTTON_DOWN,
+    JoystickHandler,
+)
 from lib.widgets import BmoMenu
-from kivy.vector import Vector
-
 
 AI_LOOK_AHEAD = 5
 CYCLE_WIDTH = 5
 
+
 class LightCycleHead(Widget):
     color = ListProperty([1, 1, 1, 1])
 
-    def __init__(self, direction: int,  **kwargs):
+    def __init__(self, direction: int, **kwargs):
         super().__init__(**kwargs)
         self.alive = True
         self.speed = 3
@@ -68,9 +75,13 @@ class LightCyclesGame(Widget, JoystickHandler):
         # Initialize grid
         self._occupied = SmartGrid(self.width, self.height)
         # Initialize players
-        self.player1 = LightCycleHead(direction=1, pos=(100, self.height/2), color=[0, 1, 1, 1], size=(CYCLE_WIDTH, CYCLE_WIDTH))
+        self.player1 = LightCycleHead(
+            direction=1, pos=(100, self.height / 2), color=[0, 1, 1, 1], size=(CYCLE_WIDTH, CYCLE_WIDTH)
+        )
         if payer_vs_computer:
-            self.computer = LightCycleHead(direction=-1, pos=(self.width-100, self.height/2), color=[1, 0, 0, 1], size=(CYCLE_WIDTH, CYCLE_WIDTH))
+            self.computer = LightCycleHead(
+                direction=-1, pos=(self.width - 100, self.height / 2), color=[1, 0, 0, 1], size=(CYCLE_WIDTH, CYCLE_WIDTH)
+            )
         else:
             self.computer = None
 
@@ -84,7 +95,7 @@ class LightCyclesGame(Widget, JoystickHandler):
         self.bind_joystick(self.on_joystick)
 
         # Start game loop
-        self._clk = Clock.schedule_interval(self.update, 1.0/self._curr_speed)
+        self._clk = Clock.schedule_interval(self.update, 1.0 / self._curr_speed)
 
     def update(self, dt):
         # Move cycles
@@ -103,7 +114,9 @@ class LightCyclesGame(Widget, JoystickHandler):
             if self._occupied[self.computer.pos]:
                 self.computer.alive = False
                 self._end_game()
-            self.computer.add_widget(LightCycleTail(pos=prev_other_player_pos, color=self.computer.color, size=(CYCLE_WIDTH, CYCLE_WIDTH)))
+            self.computer.add_widget(
+                LightCycleTail(pos=prev_other_player_pos, color=self.computer.color, size=(CYCLE_WIDTH, CYCLE_WIDTH))
+            )
             self._occupied[self.computer.pos] = True
             self._update_computer_ai()
 
@@ -116,7 +129,10 @@ class LightCyclesGame(Widget, JoystickHandler):
     def _update_computer_ai(self):
         # Simple AI: Look ahead and avoid collisions
         possible_moves = [
-            (CYCLE_WIDTH, 0, 'right'), (-CYCLE_WIDTH, 0, 'left'), (0, CYCLE_WIDTH, 'up'), (0, -CYCLE_WIDTH, 'down')
+            (CYCLE_WIDTH, 0, 'right'),
+            (-CYCLE_WIDTH, 0, 'left'),
+            (0, CYCLE_WIDTH, 'up'),
+            (0, -CYCLE_WIDTH, 'down'),
         ]
 
         current_dir = self.computer.orientation
@@ -194,13 +210,13 @@ class LightCyclesGame(Widget, JoystickHandler):
             # Draw player trail
             Color(*self.player1.color)
             for rect in self.player1.trail:
-                Rectangle(pos=(rect[0], rect[1]), size=(rect[2]-rect[0], rect[3]-rect[1]))
+                Rectangle(pos=(rect[0], rect[1]), size=(rect[2] - rect[0], rect[3] - rect[1]))
 
             # Draw computer trail
             if self.computer:
                 Color(*self.computer.color)
                 for rect in self.computer.trail:
-                    Rectangle(pos=(rect[0], rect[1]), size=(rect[2]-rect[0], rect[3]-rect[1]))
+                    Rectangle(pos=(rect[0], rect[1]), size=(rect[2] - rect[0], rect[3] - rect[1]))
 
     def _end_game(self):
         if not self.player1.alive:
@@ -239,10 +255,7 @@ class LightCyclesGame(Widget, JoystickHandler):
         title = 'Lightcycles'
         if winner:
             title += f' - {winner} wins!'
-        mnu =  BmoMenu(
-            title=title,
-            menu_items=mnu_items,
-            callback=self.menu_callback)
+        mnu = BmoMenu(title=title, menu_items=mnu_items, callback=self.menu_callback)
         mnu.open()
 
     def menu_callback(self, cmd: str):
@@ -270,7 +283,6 @@ class LightCyclesScreen(Screen):
     def on_enter(self):
         Logger.info('ENTER LightCycles screen')
         self._game.main_menu()
-
 
     def on_leave(self):
         Logger.info('LEAVE LightCycles screen')
