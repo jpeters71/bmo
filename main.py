@@ -1,15 +1,35 @@
+from calendar import c
 import os
 from datetime import datetime
+import random
 
 from kivy.config import Config
 from lib.games.lightcycles import LightCyclesScreen
 from screens.admin_screens import ListeningScreen, MainScreen
 from screens.expression_screens import (
+    CongratulationsToMeScreen,
+    CongratulationsToPlayerOneScreen,
+    CongratulationsToPlayerTwoScreen,
+    DidntHearYouScreen,
+    DoTodayScreen,
     DontKnowScreen,
+    FunSoonScreen,
     GoodAfternoonScreen,
+    GoodByeScreen,
     GoodEveningScreen,
     GoodMorningScreen,
+    GoodPersonScreen,
+    IAmBoredScreen,
+    IAmTiredScreen,
+    ItIsLateScreen,
+    LoveYouScreen,
+    MissYouScreen,
+    PlayGamesScreen,
+    PlayShowsScreen,
+    SleepNowScreen,
+    ThisOkScreen,
     TryToDoThatScreen,
+    WasThatFunScreen,
 )
 from screens.video_screen import VideoScreen
 
@@ -33,14 +53,38 @@ ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 # Screen names
 class ScreenNames:
+    # Admin screens
     main = 'main'
     video = 'video'
     listening = 'listening'
+
+    # Expressions
+    congratulations_to_me = 'congratulations_to_me'
+    congratulations_to_player_one = 'congratulations_to_player_one'
+    congratulations_to_player_two = 'congratulations_to_player_two'
+    didnt_hear = 'didnt_hear'
+    do_today = 'do_today'
     dont_know = 'dont_know'
-    try_to_do_that = 'try_to_do_that'
-    good_morning = 'good_morning'
+    fun_soon = 'fun_soon'
     good_afternoon = 'good_afternoon'
+    good_bye = 'good_bye'
     good_evening = 'good_evening'
+    good_morning = 'good_morning'
+    good_person = 'good_person'
+    i_am_bored = 'i_am_bored'
+    i_am_tired = 'i_am_tired'
+    it_is_late = 'it_is_late'
+    love_you = 'love_you'
+    miss_you = 'miss_you'
+    play_games = 'play_games'
+    play_shows = 'play_shows'
+    sleep_now = 'sleep_now'
+    this_ok = 'this_ok'
+    try_to_do_that = 'try_to_do_that'
+    was_that_fun = 'was_that_fun'
+    watch_show = 'watch_show'
+
+    # Games
     pong = 'pong'
     tetris = 'tetris'
     snake = 'snake'
@@ -67,18 +111,37 @@ class MainApp(MDApp):
         self._video_screen = VideoScreen(name=ScreenNames.video)
         self._sm.add_widget(self._video_screen)
         self._sm.add_widget(ListeningScreen(name=ScreenNames.listening))
+
+        # Expressions
+        self._sm.add_widget(CongratulationsToMeScreen(name=ScreenNames.congratulations_to_me))
+        self._sm.add_widget(CongratulationsToPlayerOneScreen(name=ScreenNames.congratulations_to_player_one))
+        self._sm.add_widget(CongratulationsToPlayerTwoScreen(name=ScreenNames.congratulations_to_player_two))
+        self._sm.add_widget(DidntHearYouScreen(name=ScreenNames.didnt_hear))
+        self._sm.add_widget(DoTodayScreen(name=ScreenNames.do_today))
         self._sm.add_widget(DontKnowScreen(name=ScreenNames.dont_know))
+        self._sm.add_widget(FunSoonScreen(name=ScreenNames.fun_soon))
+        self._sm.add_widget(GoodAfternoonScreen(name=ScreenNames.good_afternoon))
+        self._sm.add_widget(GoodByeScreen(name=ScreenNames.good_bye))
+        self._sm.add_widget(GoodEveningScreen(name=ScreenNames.good_evening))
+        self._sm.add_widget(GoodMorningScreen(name=ScreenNames.good_morning))
+        self._sm.add_widget(GoodPersonScreen(name=ScreenNames.good_person))
+        self._sm.add_widget(IAmBoredScreen(name=ScreenNames.i_am_bored))
+        self._sm.add_widget(IAmTiredScreen(name=ScreenNames.i_am_tired))
+        self._sm.add_widget(ItIsLateScreen(name=ScreenNames.it_is_late))
+        self._sm.add_widget(LoveYouScreen(name=ScreenNames.love_you))
+        self._sm.add_widget(MissYouScreen(name=ScreenNames.miss_you))
+        self._sm.add_widget(PlayGamesScreen(name=ScreenNames.play_games))
+        self._sm.add_widget(PlayShowsScreen(name=ScreenNames.play_shows))
+        self._sm.add_widget(SleepNowScreen(name=ScreenNames.sleep_now))
+        self._sm.add_widget(ThisOkScreen(name=ScreenNames.this_ok))
         self._try_screen = TryToDoThatScreen(name=ScreenNames.try_to_do_that)
         self._sm.add_widget(self._try_screen)
-        self._sm.add_widget(GoodMorningScreen(name=ScreenNames.good_morning))
-        self._sm.add_widget(GoodAfternoonScreen(name=ScreenNames.good_afternoon))
-        self._sm.add_widget(GoodEveningScreen(name=ScreenNames.good_evening))
+        self._sm.add_widget(WasThatFunScreen(name=ScreenNames.was_that_fun))
+
+        # Games
         self._sm.add_widget(SnakeScreen(name=ScreenNames.snake))
         self._sm.add_widget(TetrisScreen(name=ScreenNames.tetris))
-
-        self._pong_game = PongScreen(name=ScreenNames.pong)
-        self._sm.add_widget(self._pong_game)
-
+        self._sm.add_widget(PongScreen(name=ScreenNames.pong))
         self._sm.add_widget(LightCyclesScreen(name=ScreenNames.lightcycles))
 
         return self._sm
@@ -104,7 +167,7 @@ class MainApp(MDApp):
                 # self._sm.current = ScreenNames.tetris
                 self._startup()
             elif ev.event_name == 'leave_screen':
-                self._sm.current = ScreenNames.main
+                self._leave_screen(ev_data)
             elif ev.event_name == 'expression_done':
                 self._switch_screens(ScreenNames.main)
             elif ev.event_name == 'play_video':
@@ -159,7 +222,9 @@ class MainApp(MDApp):
             self._previous_screen = None
 
     def unknown(self):
-        self._sm.current = ScreenNames.dont_know
+        # Randomly select an unknown screen
+        scr = random.choice([ScreenNames.dont_know, ScreenNames.dont_know, ScreenNames.didnt_hear])
+        self._sm.current = scr
 
     def try_to_do_that(self, ev: BmoEvent):
         ev.event_data['prequel_done'] = True
@@ -179,6 +244,35 @@ class MainApp(MDApp):
             self._switch_screens(ScreenNames.good_afternoon)
         else:
             self._switch_screens(ScreenNames.good_evening)
+
+    def _leave_screen(self, ev_data: dict):
+        if ev_data.get('type') == 'game':
+            # Randomly select a screen we might want to show
+            scrs = [ScreenNames.main, ScreenNames.main, ScreenNames.main, ScreenNames.was_that_fun, ScreenNames.play_games]
+            winner = ev_data.get('winner') or ''
+            if winner == 'player1':
+                scrs.extend(
+                    [
+                        ScreenNames.congratulations_to_player_one,
+                        ScreenNames.congratulations_to_player_one,
+                        ScreenNames.congratulations_to_player_one,
+                    ]
+                )
+            elif winner == 'player2':
+                scrs.extend(
+                    [
+                        ScreenNames.congratulations_to_player_two,
+                        ScreenNames.congratulations_to_player_two,
+                        ScreenNames.congratulations_to_player_two,
+                    ]
+                )
+            elif winner == 'computer':
+                scrs.extend(
+                    [ScreenNames.congratulations_to_me, ScreenNames.congratulations_to_me, ScreenNames.congratulations_to_me]
+                )
+
+            scr = random.choice(scrs)
+            self._sm.current = scr
 
 
 if __name__ == '__main__':

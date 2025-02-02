@@ -1,6 +1,12 @@
-from picovoice import (Picovoice, PicovoiceInvalidArgumentError, PicovoiceActivationError,
-                       PicovoiceActivationLimitError, PicovoiceActivationRefusedError,
-                       PicovoiceActivationThrottledError, PicovoiceError)
+from picovoice import (
+    Picovoice,
+    PicovoiceInvalidArgumentError,
+    PicovoiceActivationError,
+    PicovoiceActivationLimitError,
+    PicovoiceActivationRefusedError,
+    PicovoiceActivationThrottledError,
+    PicovoiceError,
+)
 from pvrecorder import PvRecorder
 from pvrhino import Inference
 import os
@@ -41,13 +47,6 @@ class SpeechListener:
                         self.recorder = None
             Logger.info('Listening ... (Press Ctrl+C to exit)\n')
 
-
-            # add_event(BmoEvent('play_game', {'game': 'pong'}))
-            # add_event(BmoEvent('play_game', {'game': 'tetris'}))
-            # add_event(BmoEvent('play_game', {'game': 'snake'}))
-            # add_event(BmoEvent('play_video', {'season': 6, 'episode': 20}))
-
-
         except PicovoiceInvalidArgumentError as e:
             Logger.exception("One or more arguments provided to Picovoice is invalid: ")
             raise e
@@ -69,7 +68,7 @@ class SpeechListener:
 
     def wake_word_callback(self):
         Logger.info('[wake word]\n')
-        add_event(BmoEvent('wake_word',{}))
+        add_event(BmoEvent('wake_word', {}))
 
     def inference_callback(self, inference: Inference):
         if inference.is_understood:
@@ -88,18 +87,27 @@ class SpeechListener:
                         {
                             'season': season,
                             'episode': episode,
-                        }
+                        },
                     )
                 )
             elif inference.intent == 'pause':
                 add_event(BmoEvent('pause', {}))
             elif inference.intent == 'play':
-                add_event(BmoEvent('play_video', {}))
+                game = inference.slots.get('game')
+                if not game:
+                    add_event(BmoEvent('play_video', {}))
+                else:
+                    if game == 'tron':
+                        game = 'lightcycles'
+                    elif game.startswith('light cycle'):
+                        game = 'lightcycles'
+                    add_event(BmoEvent('play_game', {'game': game}))
             elif inference.intent == 'stop':
                 add_event(BmoEvent('stop', {}))
             elif inference.intent == 'playGame':
                 add_event(BmoEvent('play_game', {'game': inference.slots.get('game')}))
-
+            elif inference.intent == 'exit' or inference.intent == 'shell' or inference.intent == 'leave':
+                add_event(BmoEvent('exit', {}))
         else:
             Logger.info("Didn't understand the command.\n")
             add_event(BmoEvent('unknown_command', {}))
@@ -107,7 +115,7 @@ class SpeechListener:
     def listen(self):
         if self.recorder:
             while True:
-                pcm =self. recorder.read()
+                pcm = self.recorder.read()
                 self.picovoice.process(pcm)
         return True
 

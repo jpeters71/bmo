@@ -293,9 +293,18 @@ class LightCyclesGame(Widget, JoystickHandler):
 
     def menu_callback(self, cmd: str):
         Logger.info(f'Menu item: {cmd}')
-
         if cmd == MenuItems.EXIT:
-            add_event(BmoEvent('leave_screen', {}))
+            if not self.player1.alive:
+                if self.computer:
+                    winner = 'computer'
+                else:
+                    winner = 'player2'
+            elif self.computer and not self.computer.alive:
+                winner = 'player1'
+            elif self.player2 and not self.player2.alive:
+                winner = 'player1'
+
+            add_event(BmoEvent('leave_screen', {'type': 'game', 'winner': winner}))
         elif cmd == MenuItems.PLAYER_VS_COMPUTER:
             self.start_game(True)
         elif cmd == MenuItems.PLAYER_VS_PLAYER:

@@ -151,14 +151,29 @@ class PongGame(Widget, JoystickHandler):
             self._clk = Clock.schedule_interval(self.update, 1.0 / 60.0)
 
     def main_menu(self):
-        mnu = BmoMenu(title='Pong', menu_items=[MenuItems.PLAYER_VS_PLAYER, MenuItems.EXIT], callback=self.menu_callback)
+        if self.player1.score >= WINNING_SCORE:
+            title = ' - Player 1 wins!'
+        elif self.player2.score >= WINNING_SCORE:
+            title = ' - Player 2 wins!'
+        else:
+            title = ''
+        mnu = BmoMenu(
+            title=f'Pong{title}', menu_items=[MenuItems.PLAYER_VS_PLAYER, MenuItems.EXIT], callback=self.menu_callback
+        )
         mnu.open()
 
     def menu_callback(self, cmd: str):
         Logger.info(f'Menu item: {cmd}')
 
         if cmd == MenuItems.EXIT:
-            add_event(BmoEvent('leave_screen', {}))
+            if self.player1.score >= WINNING_SCORE:
+                winner = 'player1'
+            elif self.player2.score >= WINNING_SCORE:
+                winner = 'player2'
+            else:
+                winner = ''
+
+            add_event(BmoEvent('leave_screen', {'type': 'game', 'winner': winner}))
         elif cmd == MenuItems.PLAYER_VS_PLAYER:
             if self._pause:
                 self._halt_game()

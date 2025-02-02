@@ -1,9 +1,6 @@
-from ast import Expression
 import os
-from kivy.uix.screenmanager import Screen
 from kivymd.uix.boxlayout import MDBoxLayout
 
-from lib.bmo_player import BmoPlayer
 from kivy.uix.video import Video
 from kivy.logger import Logger
 
@@ -12,6 +9,7 @@ from screens.video_screen import VideoScreen
 
 
 ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
+
 
 class ExpressionScreen(VideoScreen):
     def __init__(self, **kwargs):
@@ -29,19 +27,40 @@ class ExpressionScreen(VideoScreen):
             add_event(BmoEvent('expression_done', {'expression': self._expression_name}))
 
 
+# Expresssion Screen classes
+class CongratulationsToMeScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='congratulations-to-me', **kwargs)
+
+
+class CongratulationsToPlayerOneScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='congratulations-to-player-one', **kwargs)
+
+
+class CongratulationsToPlayerTwoScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='congratulations-to-player-two', **kwargs)
+
+
+class DidntHearYouScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='huh-i-didnt-hear-you', **kwargs)
+
+
+class DoTodayScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='what-do-you-want-to-do-today', **kwargs)
+
+
 class DontKnowScreen(ExpressionScreen):
     def __init__(self, **kwargs):
         super().__init__(expression_name='i-do-not-understand', **kwargs)
 
 
-class TryToDoThatScreen(ExpressionScreen):
+class FunSoonScreen(ExpressionScreen):
     def __init__(self, **kwargs):
-        super().__init__(expression_name='ok-i-will-try-to-do-that', **kwargs)
-
-
-class GoodMorningScreen(ExpressionScreen):
-    def __init__(self, **kwargs):
-        super().__init__(expression_name='good-morning', **kwargs)
+        super().__init__(expression_name='i-hope-we-do-something-fun-soon', **kwargs)
 
 
 class GoodAfternoonScreen(ExpressionScreen):
@@ -49,6 +68,76 @@ class GoodAfternoonScreen(ExpressionScreen):
         super().__init__(expression_name='good-afternoon', **kwargs)
 
 
+class GoodByeScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='good-bye', **kwargs)
+
+
 class GoodEveningScreen(ExpressionScreen):
     def __init__(self, **kwargs):
         super().__init__(expression_name='good-evening', **kwargs)
+
+
+class GoodMorningScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='good-morning', **kwargs)
+
+
+class GoodPersonScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='you-are-a-good-person', **kwargs)
+
+
+class IAmBoredScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='i-am-bored', **kwargs)
+
+
+class IAmTiredScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='i-am-so-tired', **kwargs)
+
+
+class ItIsLateScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='it-is-late', **kwargs)
+
+
+class LoveYouScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='i-love-you', **kwargs)
+
+
+class MissYouScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='i-will-miss-you', **kwargs)
+
+
+class PlayGamesScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='who-wants-to-play-video-games', **kwargs)
+
+
+class PlayShowsScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='who-wants-to-watch-a-show', **kwargs)
+
+
+class SleepNowScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='i-will-go-to-sleep-now', **kwargs)
+
+
+class ThisOkScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='is-this-ok', **kwargs)
+
+
+class TryToDoThatScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='ok-i-will-try-to-do-that', **kwargs)
+
+
+class WasThatFunScreen(ExpressionScreen):
+    def __init__(self, **kwargs):
+        super().__init__(expression_name='was-that-fun', **kwargs)

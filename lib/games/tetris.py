@@ -775,7 +775,7 @@ class TetrisGame(BoxLayout, JoystickHandler):
         Logger.info(f'Menu item: {cmd}')
 
         if cmd == MenuItems.EXIT:
-            add_event(BmoEvent('leave_screen', {}))
+            add_event(BmoEvent('leave_screen', {'type': 'game'}))
         elif cmd == MenuItems.PLAYER_VS_COMPUTER:
             if self._pause:
                 self._halt_game()
