@@ -19,19 +19,16 @@ from os import path
 
 from kivy.clock import Clock
 from kivy.core.window import Window
-from kivy.lang import Builder
 from kivy.logger import Logger
 from kivy.uix.screenmanager import NoTransition, ScreenManager
 from kivymd.app import MDApp
 from lib.event_queue import BmoEvent, add_event, get_next_event
-from lib.games.pong import PongGame, PongScreen
+from lib.games.pong import PongScreen
 from lib.games.snake import SnakeScreen
-from lib.games.tetris import TetrisGame, TetrisScreen
+from lib.games.tetris import TetrisScreen
 from lib.listener import start_listening
 
 ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
-
-# Builder.load_file('main.kv')
 
 
 # Screen names
@@ -105,7 +102,6 @@ class MainApp(MDApp):
             elif ev.event_name == 'startup':
                 # For testing only
                 # self._sm.current = ScreenNames.tetris
-
                 self._startup()
             elif ev.event_name == 'leave_screen':
                 self._sm.current = ScreenNames.main
@@ -142,16 +138,16 @@ class MainApp(MDApp):
 
                 if game_name == 'pong':
                     self._sm.current = ScreenNames.pong
-                    self._pong_game.play()
                 elif game_name == 'tetris':
-                    self._game_widget = TetrisGame()
-                    self._layout.remove_widget(self._image)
-                    self._layout.add_widget(self._game_widget)
-
+                    self._sm.current = ScreenNames.tetris
                 elif game_name == 'snake':
-                    self._game_widget = SnakeGame()
-                    self._layout.remove_widget(self._image)
-                    self._layout.add_widget(self._game_widget)
+                    self._sm.current = ScreenNames.snake
+                elif game_name == 'lightcycles':
+                    self._sm.current = ScreenNames.lightcycles
+
+            # Exit
+            elif ev.event_name == 'exit':
+                self.stop()
 
     def listen(self):
         self._previous_screen = self._sm.current
@@ -185,6 +181,5 @@ class MainApp(MDApp):
             self._switch_screens(ScreenNames.good_evening)
 
 
-# run the app
-sample_app = MainApp()
-sample_app.run()
+if __name__ == '__main__':
+    MainApp().run()

@@ -60,8 +60,9 @@ class LightCycleTail(Widget):
 
 
 class LightCyclesGame(Widget, JoystickHandler):
-    player1 = ObjectProperty(None)
-    computer = ObjectProperty(None)
+    player1 = ObjectProperty(None, allownone=True)
+    player2 = ObjectProperty(None, allownone=True)
+    computer = ObjectProperty(None, allownone=True)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -82,11 +83,21 @@ class LightCyclesGame(Widget, JoystickHandler):
             self.computer = LightCycleHead(
                 direction=-1, pos=(self.width - 100, self.height / 2), color=[1, 0, 0, 1], size=(CYCLE_WIDTH, CYCLE_WIDTH)
             )
+            if self.player2:
+                self.remove_widget(self.player2)
+            self.player2 = None
         else:
+            if self.computer:
+                self.remove_widget(self.computer)
             self.computer = None
+            self.player2 = LightCycleHead(
+                direction=-1, pos=(self.width - 100, self.height / 2), color=[1, 0, 0, 1], size=(CYCLE_WIDTH, CYCLE_WIDTH)
+            )
 
         if self.computer:
             self.add_widget(self.computer)
+        else:
+            self.add_widget(self.player2)
 
         # Add widgets
         self.add_widget(self.player1)
@@ -104,6 +115,9 @@ class LightCyclesGame(Widget, JoystickHandler):
         if self.computer:
             prev_other_player_pos = self.computer.pos
             self.computer.move()
+        elif self.player2:
+            prev_other_player_pos = self.player2.pos
+            self.player2.move()
 
         # Check for collisions
         if self._occupied[self.player1.pos]:
@@ -119,7 +133,14 @@ class LightCyclesGame(Widget, JoystickHandler):
             )
             self._occupied[self.computer.pos] = True
             self._update_computer_ai()
-
+        elif self.player2:
+            if self._occupied[self.player2.pos]:
+                self.player2.alive = False
+                self._end_game()
+            self.player2.add_widget(
+                LightCycleTail(pos=prev_other_player_pos, color=self.player2.color, size=(CYCLE_WIDTH, CYCLE_WIDTH))
+            )
+            self._occupied[self.player2.pos] = True
         # Add tail
         self.player1.add_widget(LightCycleTail(pos=prev_player1_pos, color=self.player1.color, size=(CYCLE_WIDTH, CYCLE_WIDTH)))
 
@@ -183,10 +204,11 @@ class LightCyclesGame(Widget, JoystickHandler):
             self.player1.velocity_y = 0
 
     def on_joystick(self, stick_id, action):
+        player = None
         if stick_id == 0:
             player = self.player1
-        elif stick_id == 1:
-            player = self.player1
+        elif stick_id == 1 and self.player2:
+            player = self.player2
 
         if player:
             if action == JOY_ACITON_ARROW_UP:
@@ -217,11 +239,20 @@ class LightCyclesGame(Widget, JoystickHandler):
                 Color(*self.computer.color)
                 for rect in self.computer.trail:
                     Rectangle(pos=(rect[0], rect[1]), size=(rect[2] - rect[0], rect[3] - rect[1]))
+            elif self.player2:
+                Color(*self.player2.color)
+                for rect in self.player2.trail:
+                    Rectangle(pos=(rect[0], rect[1]), size=(rect[2] - rect[0], rect[3] - rect[1]))
 
     def _end_game(self):
         if not self.player1.alive:
-            winner = 'Computer'
-        elif not self.computer.alive:
+            if self.computer:
+                winner = 'Computer'
+            else:
+                winner = 'Player 2'
+        elif self.computer and not self.computer.alive:
+            winner = 'Player 1'
+        elif self.player2 and not self.player2.alive:
             winner = 'Player 1'
         self._halt_game()
         self.main_menu(winner=winner)
@@ -234,6 +265,8 @@ class LightCyclesGame(Widget, JoystickHandler):
             self.remove_widget(self.player1)
         if self.computer:
             self.remove_widget(self.computer)
+        if self.player2:
+            self.remove_widget(self.player2)
         self.unbind_joystick()
 
     def _pause_resume_game(self):

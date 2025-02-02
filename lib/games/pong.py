@@ -178,7 +178,7 @@ class PongScreen(Screen):
 
     def on_enter(self):
         Logger.info('ENTER Pong screen')
-        # self._game.play()
+        self._game.main_menu()
 
     def on_leave(self):
         Logger.info('LEAVE Pong screen')

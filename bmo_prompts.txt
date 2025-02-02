@@ -1,0 +1,13 @@
+# Things folks can say to BMO
+# -----------------------------
+play episode
+play [adventure time, distant lands,  episode]
+pause
+play
+stop
+play [lightcycles, pong, snake, tetris]
+what is the weather [forecast, today, tomorrow]
+exit
+yes
+no
+turn off

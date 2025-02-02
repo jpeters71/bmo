@@ -1,0 +1,28 @@
+# Phrases we want BMO to say
+# -----------------------------
+Good morning!
+Good afternoon!
+Good evening!
+Oh, it's late!
+That tickles!
+How was the game?
+Here is the weather for today.
+Hi Eni.
+I do not understand.
+Huh, I didn't hear you.
+OK, I will try to do that.
+What do you want to do today?
+I am bored.
+I am so tired.
+Who wants to play a video game?
+Who wants to watch a show?
+OK, Goodbye.
+Really, so soon?
+OK, I will go to sleep now.
+I will miss you.
+I love you.
+You are a good person.
+I hope we do something fun soon.
+I like to play games.
+Is this OK?
+Are you sure?

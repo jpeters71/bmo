@@ -13,12 +13,20 @@ from kivy.uix.label import Label
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.screenmanager import Screen
 from kivy.uix.widget import Widget
+from lib.constants import MenuItems
 from lib.event_queue import BmoEvent, add_event
-from lib.kivy_utils import (JOY_ACITON_ARROW_UP, JOY_ACITON_RELEASE_ARROW,
-                            JOY_ACTION_A_BUTTON_DOWN, JOY_ACTION_ARROW_DOWN,
-                            JOY_ACTION_ARROW_LEFT, JOY_ACTION_ARROW_RIGHT,
-                            JOY_ACTION_B_BUTTON_DOWN, JOY_ACTION_B_BUTTON_UP,
-                            JOY_ACTION_SELECT_BUTTON_DOWN, JoystickHandler)
+from lib.kivy_utils import (
+    JOY_ACITON_ARROW_UP,
+    JOY_ACITON_RELEASE_ARROW,
+    JOY_ACTION_A_BUTTON_DOWN,
+    JOY_ACTION_ARROW_DOWN,
+    JOY_ACTION_ARROW_LEFT,
+    JOY_ACTION_ARROW_RIGHT,
+    JOY_ACTION_B_BUTTON_DOWN,
+    JOY_ACTION_B_BUTTON_UP,
+    JOY_ACTION_SELECT_BUTTON_DOWN,
+    JoystickHandler,
+)
 from lib.widgets import BmoMenu
 
 SHAPE_COLOR_1 = (0, 0.25, 0.3, 1)
