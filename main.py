@@ -32,6 +32,7 @@ from screens.expression_screens import (
     WasThatFunScreen,
 )
 from screens.video_screen import VideoScreen
+from screens.weather_screen import WeatherScreen
 
 Config.read('./app_settings.ini')
 
@@ -83,6 +84,7 @@ class ScreenNames:
     try_to_do_that = 'try_to_do_that'
     was_that_fun = 'was_that_fun'
     watch_show = 'watch_show'
+    weather = 'weather'
 
     # Games
     pong = 'pong'
@@ -137,6 +139,7 @@ class MainApp(MDApp):
         self._try_screen = TryToDoThatScreen(name=ScreenNames.try_to_do_that)
         self._sm.add_widget(self._try_screen)
         self._sm.add_widget(WasThatFunScreen(name=ScreenNames.was_that_fun))
+        self._sm.add_widget(WeatherScreen(name=ScreenNames.weather))
 
         # Games
         self._sm.add_widget(SnakeScreen(name=ScreenNames.snake))
@@ -211,6 +214,11 @@ class MainApp(MDApp):
             # Exit
             elif ev.event_name == 'exit':
                 self.stop()
+            elif ev.event_name == 'show_weather':
+                if ev.event_data.get('prequel_done'):
+                    self._sm.current = ScreenNames.weather
+                else:
+                    self.try_to_do_that(ev)
 
     def listen(self):
         self._previous_screen = self._sm.current
@@ -273,6 +281,8 @@ class MainApp(MDApp):
 
             scr = random.choice(scrs)
             self._sm.current = scr
+        else:
+            self._sm.current = ScreenNames.main
 
 
 if __name__ == '__main__':

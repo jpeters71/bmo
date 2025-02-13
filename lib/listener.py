@@ -106,6 +106,8 @@ class SpeechListener:
                 add_event(BmoEvent('stop', {}))
             elif inference.intent == 'playGame':
                 add_event(BmoEvent('play_game', {'game': inference.slots.get('game')}))
+            elif inference.intent == 'weather':
+                add_event(BmoEvent('show_weather', {}))
             elif inference.intent == 'exit' or inference.intent == 'shell' or inference.intent == 'leave':
                 add_event(BmoEvent('exit', {}))
         else:

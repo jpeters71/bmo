@@ -18,7 +18,16 @@ class MainScreen(Screen, JoystickHandler):
             self.main_menu()
 
     def main_menu(self):
-        mnu = BmoMenu(title='Main', menu_items=[MenuItems.GAMES, MenuItems.VIDEOS, MenuItems.EXIT], callback=self.menu_callback)
+        mnu = BmoMenu(
+            title='Main',
+            menu_items=[
+                MenuItems.GAMES,
+                MenuItems.VIDEOS,
+                MenuItems.WEATHER,
+                MenuItems.EXIT
+            ],
+            callback=self.menu_callback
+        )
         mnu.open()
 
     def menu_callback(self, cmd: str):
@@ -28,6 +37,8 @@ class MainScreen(Screen, JoystickHandler):
             self.games_menu()
         elif cmd == MenuItems.VIDEOS:
             add_event(BmoEvent('games_menu', {}))
+        elif cmd == MenuItems.WEATHER:
+            add_event(BmoEvent('show_weather', {}))
 
     def games_menu(self):
         self.unbind_joystick()

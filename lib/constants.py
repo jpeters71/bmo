@@ -40,3 +40,4 @@ class MenuItems:
     PONG = 'Pong'
     SNAKE = 'Snake'
     TETRIS = 'Tetris'
+    WEATHER = 'Weather'
