@@ -1,4 +1,5 @@
 from kivy.clock import Clock
+from kivy.core.audio import SoundLoader, Sound
 from kivy.core.window import Window
 from kivy.graphics import Color, Line, Rectangle
 from kivy.logger import Logger
@@ -17,7 +18,9 @@ from lib.kivy_utils import (
     JOY_ACTION_SELECT_BUTTON_DOWN,
     JoystickHandler,
 )
+from lib.volume import get_volume_level_percent
 from lib.widgets import BmoMenu
+
 
 AI_LOOK_AHEAD = 5
 CYCLE_WIDTH = 5
@@ -31,11 +34,14 @@ class LightCycleHead(Widget):
         self.alive = True
         self.speed = 3
         self.orientation = (CYCLE_WIDTH * direction, 0)
+        self._lc_turn_sound: Sound = SoundLoader.load('./media/sounds/lc-turn.wav')
+        self._lc_turn_sound.volume = get_volume_level_percent()
 
     def move(self):
         self.pos = Vector(*self.orientation) + self.pos
 
     def turn(self, direction):
+        self._lc_turn_sound.play()
         if direction == 'up':
             self.orientation = (0, CYCLE_WIDTH)
         elif direction == 'down':
@@ -71,6 +77,10 @@ class LightCyclesGame(Widget, JoystickHandler):
         self._clock = None
         self._occupied = None
         self._curr_speed = 45.0
+        self._lc_run_sound: Sound = SoundLoader.load('./media/sounds/lc-run.wav')
+        self._lc_run_sound.volume = get_volume_level_percent()
+        self._lc_death_sound: Sound = SoundLoader.load('./media/sounds/lc-death.wav')
+        self._lc_death_sound.volume = get_volume_level_percent()
 
     def start_game(self, payer_vs_computer=True):
         # Initialize grid
@@ -104,6 +114,9 @@ class LightCyclesGame(Widget, JoystickHandler):
 
         # Setup callbacks
         self.bind_joystick(self.on_joystick)
+
+        self._lc_run_sound.loop = True
+        self._lc_run_sound.play()
 
         # Start game loop
         self._clk = Clock.schedule_interval(self.update, 1.0 / self._curr_speed)
@@ -245,6 +258,8 @@ class LightCyclesGame(Widget, JoystickHandler):
                     Rectangle(pos=(rect[0], rect[1]), size=(rect[2] - rect[0], rect[3] - rect[1]))
 
     def _end_game(self):
+        self._lc_run_sound.stop()
+        self._lc_death_sound.play()
         if not self.player1.alive:
             if self.computer:
                 winner = 'Computer'
@@ -261,6 +276,9 @@ class LightCyclesGame(Widget, JoystickHandler):
         if self._clk:
             self._clk.cancel()
             self._clk = None
+
+        self._lc_run_sound.stop()
+
         if self.player1:
             self.remove_widget(self.player1)
         if self.computer:

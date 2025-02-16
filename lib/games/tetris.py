@@ -4,6 +4,7 @@ from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Rectangle
+from kivy.core.audio import SoundLoader, Sound
 from kivy.logger import Logger
 from kivy.properties import ColorProperty
 from kivy.uix.boxlayout import BoxLayout
@@ -27,6 +28,7 @@ from lib.kivy_utils import (
     JOY_ACTION_SELECT_BUTTON_DOWN,
     JoystickHandler,
 )
+from lib.volume import get_volume_level_percent
 from lib.widgets import BmoMenu
 
 SHAPE_COLOR_1 = (0, 0.25, 0.3, 1)
@@ -62,7 +64,7 @@ class TetrisPanel(BoxLayout):
         self.orientation = "vertical"
 
         self.label1 = Label(
-            text="KivyTetris",
+            text="BMO Tetris",
             font_size=self.height / 3,
             font_name="label_font.ttf",
             color=TEXT_COLOR,
@@ -666,6 +668,8 @@ class TetrisGame(BoxLayout, JoystickHandler):
         self._pause = False
         self._clk = None
         self._current_speed = START_SPEED
+        self._run_song: Sound = SoundLoader.load('./media/sounds/tetris.ogg')
+        self._run_song.volume = get_volume_level_percent()
 
     def on_key_down(self, keyboard, keycode, text, modifiers):
         if keycode[1] == "left":
@@ -747,6 +751,8 @@ class TetrisGame(BoxLayout, JoystickHandler):
         self.tetris.shapes.clear()
         self.tetris.canvas.clear()
         self.bind_joystick(self.on_joystick)
+        self._run_song.loop = True
+        self._run_song.play()
         self.tetris.start_game()
         self._clk = Clock.schedule_interval(self.update, 1 / 120)
 
@@ -763,12 +769,13 @@ class TetrisGame(BoxLayout, JoystickHandler):
         self.panel.seg3.size = (0, 0)
         self.panel.seg4.size = (0, 0)
 
+        self._run_song.stop()
         if self._clk:
             self._clk.cancel()
         self.unbind_joystick()
 
     def main_menu(self):
-        mnu = BmoMenu(title='Snake', menu_items=[MenuItems.PLAYER_VS_COMPUTER, MenuItems.EXIT], callback=self.menu_callback)
+        mnu = BmoMenu(title='Tetris', menu_items=[MenuItems.PLAYER_VS_COMPUTER, MenuItems.EXIT], callback=self.menu_callback)
         mnu.open()
 
     def menu_callback(self, cmd: str):

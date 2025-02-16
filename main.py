@@ -5,6 +5,7 @@ import random
 
 from kivy.config import Config
 from lib.games.lightcycles import LightCyclesScreen
+from lib.volume import VolumeLevel, set_volume_level
 from screens.admin_screens import ListeningScreen, MainScreen
 from screens.expression_screens import (
     CongratulationsToMeScreen,
@@ -150,6 +151,7 @@ class MainApp(MDApp):
         return self._sm
 
     def on_start(self):
+        set_volume_level(VolumeLevel.high)
         self._ev_clock = Clock.schedule_interval(self._process_events, 0.5)
         add_event(BmoEvent('startup', {}))
 
@@ -231,7 +233,7 @@ class MainApp(MDApp):
 
     def unknown(self):
         # Randomly select an unknown screen
-        scr = random.choice([ScreenNames.dont_know, ScreenNames.dont_know, ScreenNames.didnt_hear])
+        scr = random.choice([ScreenNames.dont_know, ScreenNames.dont_know, ScreenNames.dont_know, ScreenNames.didnt_hear])
         self._sm.current = scr
 
     def try_to_do_that(self, ev: BmoEvent):

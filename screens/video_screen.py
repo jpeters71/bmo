@@ -6,6 +6,7 @@ from kivy.uix.video import Video
 from kivy.logger import Logger
 
 from lib.event_queue import BmoEvent, add_event
+from lib.volume import get_volume_level_percent
 
 
 class VideoScreen(Screen):
@@ -27,18 +28,20 @@ class VideoScreen(Screen):
         self._leave_event = leave_event
 
     def play(self):
-        self._player.state='play'
+        self._player.volume = get_volume_level_percent()
+        self._player.state = 'play'
 
     def pause(self):
-        self._player.state='pause'
+        self._player.state = 'pause'
 
     def stop(self):
-        self._player.state='stop'
-        #self._player.source = ''
+        self._player.state = 'stop'
+        # self._player.source = ''
         add_event(BmoEvent('leave_screen', {}))
 
     def on_enter(self):
         Logger.info('ENTER Video screen')
+        self._player.volume = get_volume_level_percent()
         self._player.source = self._current_file
         if self._player.loaded:
             self._player.seek(0.000)
@@ -51,4 +54,3 @@ class VideoScreen(Screen):
         else:
             add_event(self._leave_event)
             self._leave_event = None
-

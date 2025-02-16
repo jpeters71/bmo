@@ -58,6 +58,7 @@ class WeatherScreen(Screen, JoystickHandler):
 
     def on_joystick(self, stick_id, action):
         add_event(BmoEvent('leave_screen', {}))
+        self.unbind_joystick()
         return True
 
     def update_weather(self):
@@ -100,7 +101,7 @@ class WeatherScreen(Screen, JoystickHandler):
 
             self._weather_content.add_widget(day_layout)
 
-        self._clock = Clock.schedule_once(self.exit, 15.0)
+        self._clock = Clock.schedule_once(self.exit, 10.0)
 
     def exit(self, dt):
         add_event(BmoEvent('leave_screen', {}))

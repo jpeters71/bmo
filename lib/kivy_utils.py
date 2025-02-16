@@ -2,7 +2,19 @@ from kivy.core.window import Window
 
 from typing import Callable
 
-from lib.constants import CTLR_BUTTON_A, CTLR_BUTTON_B, CTLR_BUTTON_SELECT, CTLR_BUTTON_START, CTRL_AXIS_HORIZONTAL, CTRL_AXIS_VERTICAL, CTRL_DOWN_ARROW, CTRL_LEFT_ARROW, CTRL_RELEASE_ARROW, CTRL_RIGHT_ARROW, CTRL_UP_ARROW
+from lib.constants import (
+    CTLR_BUTTON_A,
+    CTLR_BUTTON_B,
+    CTLR_BUTTON_SELECT,
+    CTLR_BUTTON_START,
+    CTRL_AXIS_HORIZONTAL,
+    CTRL_AXIS_VERTICAL,
+    CTRL_DOWN_ARROW,
+    CTRL_LEFT_ARROW,
+    CTRL_RELEASE_ARROW,
+    CTRL_RIGHT_ARROW,
+    CTRL_UP_ARROW,
+)
 
 
 JOY_ACTION_A_BUTTON_DOWN = 1
@@ -84,4 +96,3 @@ class JoystickHandler:
             self._callback(stickid, JOY_ACTION_START_BUTTON_UP)
         elif buttonid == CTLR_BUTTON_SELECT:
             self._callback(stickid, JOY_ACTION_SELECT_BUTTON_UP)
-

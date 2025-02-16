@@ -30,21 +30,10 @@ class SpeechListener:
                 context_path=f'{root_path}/media/stt_model.rhn',
                 inference_callback=self.inference_callback,
             )
-            self.recorder = None
-
-            for idx in range(1, 4):
-                try:
-                    self.recorder = PvRecorder(
-                        frame_length=self.picovoice.frame_length,
-                        device_index=idx,
-                    )
-                    self.recorder.start()
-                    break
-                except Exception as e:
-                    Logger.exception(f'Failed to start recorder with device index {idx}.')
-                    if self.recorder:
-                        self.recorder.delete()
-                        self.recorder = None
+            self.recorder = PvRecorder(
+                frame_length=self.picovoice.frame_length,
+            )
+            self.recorder.start()
             Logger.info('Listening ... (Press Ctrl+C to exit)\n')
 
         except PicovoiceInvalidArgumentError as e:

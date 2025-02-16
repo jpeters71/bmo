@@ -11,6 +11,14 @@
             pos: self.pos
             size: self.size
             source: './media/faces/smile.jpg'
+        Rectangle:
+            pos: self.pos[0], self.pos[1]  # lower left corner
+            size: dp(64), dp(64)
+            source: root.volume_icon
+        Rectangle:
+            pos: self.pos[0] + self.size[0] - dp(64), self.pos[1]  # lower right corner
+            size: dp(64), dp(64)
+            source: root.battery_icon
 
 # ========================================
 # Listening Screen

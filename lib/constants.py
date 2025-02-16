@@ -32,6 +32,7 @@ class MenuItems:
     PLAYER_VS_COMPUTER = 'New Game Player vs. Computer'
     PLAYER_VS_PLAYER = 'New Game Player vs. Player'
     EXIT = 'Exit'
+    EXIT_BMO = 'Exit BMO'
 
     GAMES = 'Games'
     VIDEOS = 'Videos'
@@ -40,4 +41,11 @@ class MenuItems:
     PONG = 'Pong'
     SNAKE = 'Snake'
     TETRIS = 'Tetris'
+
     WEATHER = 'Weather'
+
+    VOLUME = 'Volume'
+    VOLUME_MUTE = 'Mute'
+    VOLUME_LOW = 'Low'
+    VOLUME_MEDIUM = 'Medium'
+    VOLUME_HIGH = 'High'

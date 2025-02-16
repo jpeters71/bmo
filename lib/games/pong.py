@@ -1,6 +1,7 @@
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.logger import Logger
+from kivy.core.audio import Sound, SoundLoader
 from kivy.properties import NumericProperty, ObjectProperty, ReferenceListProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
@@ -12,6 +13,7 @@ from kivy.vector import Vector
 from lib.constants import MenuItems
 from lib.event_queue import BmoEvent, add_event
 from lib.kivy_utils import JOY_ACITON_ARROW_UP, JOY_ACTION_ARROW_DOWN, JOY_ACTION_SELECT_BUTTON_DOWN, JoystickHandler
+from lib.volume import get_volume_level_percent
 from lib.widgets import BmoMenu
 
 VERT_OFFSET = 20
@@ -27,6 +29,8 @@ class PongPaddle(Widget):
 
     def bounce_ball(self, ball):
         if self.collide_widget(ball):
+            if self.sound:
+                self.sound.play()
             vx, vy = ball.velocity
             offset = (ball.center_y - self.center_y) / (self.height / 2)
             bounced = Vector(-1 * vx, vy)
@@ -58,6 +62,10 @@ class PongGame(Widget, JoystickHandler):
         self._initialized = False
         self._clk = None
         self._pause = False
+        self._sound_gameover = SoundLoader.load('./media/sounds/pong_gameover.wav')
+        self._sound_gameover.volume = get_volume_level_percent()
+        self._sound_serve = SoundLoader.load('./media/sounds/pong_serve.wav')
+        self._sound_serve.volume = get_volume_level_percent()
 
     def start_game(self):
         self._pause = False
@@ -66,7 +74,10 @@ class PongGame(Widget, JoystickHandler):
         self.player1.score = 0
         self.player2.score = 0
         self.player1.center_y = self.center_y
-        self.player2.center_y = self.center_y
+        self.player1.sound = SoundLoader.load('./media/sounds/pong_left.wav')
+        self.player1.volume = get_volume_level_percent()
+        self.player2.sound = SoundLoader.load('./media/sounds/pong_right.wav')
+        self.player2.volume = get_volume_level_percent()
 
         # Setup callbacks
         self.bind_joystick(self.on_joystick)
@@ -75,6 +86,8 @@ class PongGame(Widget, JoystickHandler):
         self._clk = Clock.schedule_interval(self.update, 1.0 / 60.0)
 
     def serve_ball(self, vel=(4, 0)):
+        if self._sound_serve:
+            self._sound_serve.play()
         self.ball.center = self.center
         self.ball.velocity = vel
 
@@ -125,6 +138,8 @@ class PongGame(Widget, JoystickHandler):
 
     def _end_game(self):
         Logger.info('Game over')
+        if self._sound_gameover:
+            self._sound_gameover.play()
         self._halt_game()
         self.main_menu()
 
