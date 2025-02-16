@@ -1,3 +1,4 @@
+from math import inf
 from picovoice import (
     Picovoice,
     PicovoiceInvalidArgumentError,
@@ -63,17 +64,27 @@ class SpeechListener:
         if inference.is_understood:
             Logger.info(f'INFERENCE INTENT: {inference.intent}; slots: {inference.slots}')
             if inference.intent == 'playEpisode':
+                show_str = inference.slots.get('show')
                 season_str = inference.slots.get('season')
                 episode_str = inference.slots.get('episode')
 
                 season = w2n.word_to_num(season_str)
                 episode = w2n.word_to_num(episode_str)
 
-                Logger.info(f'PLAY INTENT: season {season}, episode {episode}')
+                if show_str:
+                    if show_str == 'distant lands':
+                        show = 'adventure time distant lands'
+                    elif show_str == 'adventure time':
+                        show = 'adventure time'
+                else:
+                    show = 'adventure time'
+
+                Logger.info(f'PLAY INTENT: show {show}, season {season}, episode {episode}')
                 add_event(
                     BmoEvent(
                         'play_video',
                         {
+                            'show': show,
                             'season': season,
                             'episode': episode,
                         },

@@ -151,7 +151,7 @@ class MainApp(MDApp):
         return self._sm
 
     def on_start(self):
-        set_volume_level(VolumeLevel.high)
+        set_volume_level(VolumeLevel.medium)
         self._ev_clock = Clock.schedule_interval(self._process_events, 0.5)
         add_event(BmoEvent('startup', {}))
 
@@ -169,7 +169,6 @@ class MainApp(MDApp):
                 self.unknown()
             elif ev.event_name == 'startup':
                 # For testing only
-                # self._sm.current = ScreenNames.tetris
                 self._startup()
             elif ev.event_name == 'leave_screen':
                 self._leave_screen(ev_data)
@@ -179,11 +178,17 @@ class MainApp(MDApp):
                 if self._sm.current != ScreenNames.video:
                     if ev.event_data.get('prequel_done'):
                         # Build up filename
+                        show = ev_data.get('show')
                         season = ev_data.get('season')
                         episode = ev_data.get('episode')
-                        pth = path.expanduser(f'~/work/media/adventure time.s{season:02}e{episode:02}.mkv')
-                        self._video_screen.set_video_file(pth)
-                        self._sm.current = ScreenNames.video
+                        pth = path.expanduser(f'~/work/media/{show}.s{season:02}e{episode:02}.mkv')
+
+                        if not os.path.exists(pth):
+                            Logger.error(f'File not found: {pth}')
+                            self.unknown()
+                        else:
+                            self._video_screen.set_video_file(pth)
+                            self._sm.current = ScreenNames.video
                     else:
                         self.try_to_do_that(ev)
                 else:
@@ -215,7 +220,11 @@ class MainApp(MDApp):
 
             # Exit
             elif ev.event_name == 'exit':
-                self.stop()
+                if ev.event_data.get('prequel_done'):
+                    Logger.info('Exiting...')
+                    self.stop()
+                else:
+                    self.prequel_screen(ScreenNames.good_bye, ev)
             elif ev.event_name == 'show_weather':
                 if ev.event_data.get('prequel_done'):
                     self._sm.current = ScreenNames.weather
@@ -237,9 +246,13 @@ class MainApp(MDApp):
         self._sm.current = scr
 
     def try_to_do_that(self, ev: BmoEvent):
+        self.prequel_screen(ScreenNames.try_to_do_that, ev)
+
+    def prequel_screen(self, prequel_screen: str, ev: BmoEvent):
         ev.event_data['prequel_done'] = True
-        self._try_screen.set_leave_event(ev)
-        self._sm.current = ScreenNames.try_to_do_that
+        scrn = self._sm.get_screen(prequel_screen)
+        scrn.set_leave_event(ev)
+        self._sm.current = prequel_screen
 
     def _switch_screens(self, screen_name: str):
         self._sm.current = screen_name
