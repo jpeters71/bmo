@@ -1,3 +1,4 @@
+import random
 from kivy.uix.screenmanager import Screen
 from kivy.properties import StringProperty
 from kivy.clock import Clock
@@ -42,6 +43,11 @@ class MainScreen(Screen, JoystickHandler):
 
         vl = get_volume_level()
         self.volume_icon = f'./media/volume/volume-{vl.name}.png'
+
+        # Randomly check if we should show an idle message.
+        # Trying to only show one ~every 10 minutes (600 seconds) or so
+        if dt and random.randint(0, 600) == 0:
+            add_event(BmoEvent('idle', {}))
 
     def on_exit(self):
         pass

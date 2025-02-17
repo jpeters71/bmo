@@ -218,18 +218,29 @@ class MainApp(MDApp):
                 elif game_name == 'lightcycles':
                     self._sm.current = ScreenNames.lightcycles
 
+            # Weather
+            elif ev.event_name == 'show_weather':
+                if ev.event_data.get('prequel_done'):
+                    self._sm.current = ScreenNames.weather
+                else:
+                    self.try_to_do_that(ev)
+
+            # Idle
+            elif ev.event_name == 'idle':
+                self.idle()
+
             # Exit
             elif ev.event_name == 'exit':
                 if ev.event_data.get('prequel_done'):
                     Logger.info('Exiting...')
                     self.stop()
                 else:
-                    self.prequel_screen(ScreenNames.good_bye, ev)
-            elif ev.event_name == 'show_weather':
-                if ev.event_data.get('prequel_done'):
-                    self._sm.current = ScreenNames.weather
-                else:
-                    self.try_to_do_that(ev)
+                    exit_scrs = [ScreenNames.good_bye]
+                    hour = self._get_hour()
+                    if hour > 16:
+                        exit_scrs.append(ScreenNames.sleep_now)
+
+                    self.prequel_screen(random.choice(exit_scrs), ev)
 
     def listen(self):
         self._previous_screen = self._sm.current
@@ -243,6 +254,29 @@ class MainApp(MDApp):
     def unknown(self):
         # Randomly select an unknown screen
         scr = random.choice([ScreenNames.dont_know, ScreenNames.dont_know, ScreenNames.dont_know, ScreenNames.didnt_hear])
+        self._sm.current = scr
+
+    def idle(self):
+        # Randomly select an idle screen
+        hour = self._get_hour()
+
+        idle_screens = [
+            ScreenNames.i_am_bored,
+            ScreenNames.i_am_tired,
+            ScreenNames.fun_soon,
+            ScreenNames.love_you,
+            ScreenNames.good_person,
+            ScreenNames.love_you,
+            ScreenNames.play_games,
+            ScreenNames.play_shows,
+            ScreenNames.good_person,
+        ]
+        if hour >= 22 or hour <= 4:
+            idle_screens.append(ScreenNames.it_is_late)
+            idle_screens.append(ScreenNames.i_am_tired)
+        elif hour < 12 and hour > 5:
+            idle_screens.append(ScreenNames.do_today)
+        scr = random.choice(idle_screens)
         self._sm.current = scr
 
     def try_to_do_that(self, ev: BmoEvent):
@@ -259,8 +293,7 @@ class MainApp(MDApp):
 
     def _startup(self):
         # Check the time to figure out what time of day it is
-        now = datetime.now()
-        hour = now.hour
+        hour = self._get_hour()
         if 6 <= hour < 12:
             self._switch_screens(ScreenNames.good_morning)
         elif 12 <= hour < 18:
@@ -298,6 +331,11 @@ class MainApp(MDApp):
             self._sm.current = scr
         else:
             self._sm.current = ScreenNames.main
+
+    def _get_hour(self) -> int:
+        now = datetime.now()
+        hour = now.hour
+        return hour
 
 
 if __name__ == '__main__':
